@@ -1,0 +1,11 @@
+# Generados por build.mjs (la fuente es negocio.js + src/)
+dist/
+firebase.json
+.firebaserc
+firestore.rules
+.firebase/
+node_modules/
+soporte/node_modules/
+soporte/clave-servicio*.json
+*-service-account*.json
+.DS_Store

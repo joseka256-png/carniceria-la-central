@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{seo.titulo}}</title>
+<meta name="description" content="{{seo.descripcion}}">
+<link rel="icon" href="favicon.png">
+<meta property="og:title" content="{{seo.ogTitulo}}">
+<meta property="og:description" content="{{seo.ogDescripcion}}">
+<meta property="og:image" content="{{seo.ogImagen}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primario:{{colores.primario}}; --primario-osc:{{colores.primarioOsc}}; --naranja:{{colores.acento}}; --naranja-osc:{{colores.acentoOsc}};
+    --negro:#2B2F33; --pizarra:#23272B; --gris:#5d625f;
+    --crema:#F7F5EF; --blanco:#fff; --borde:#E4DFD3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{color-scheme:light}
+  input,textarea{color:var(--negro);-webkit-text-fill-color:var(--negro)}
+  input::placeholder,textarea::placeholder{color:#9aa09c;-webkit-text-fill-color:#9aa09c;opacity:1}
+  .carrito{color:var(--negro)}
+  html{scroll-behavior:smooth}
+  body{font-family:'Poppins',sans-serif;color:var(--negro);background:var(--crema);line-height:1.6}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1150px,92%);margin:auto}
+  @font-face{font-family:'Parisienne';src:url('fonts/Parisienne-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+  .script{font-family:'Parisienne',cursive;font-weight:400;letter-spacing:.01em}
+  @font-face{font-family:'Playfair Display';src:url('fonts/PlayfairDisplay.ttf') format('truetype');font-weight:400 900;font-display:swap}
+  .hero h1,.titulo h2,.about h2,.cta h2,.lealtad h3{font-family:'Playfair Display',Georgia,serif;font-weight:800;letter-spacing:-.01em}
+  .hero h1 .script{font-family:'Parisienne',cursive;font-weight:400;letter-spacing:.01em}
+
+  /* NAV */
+  header{position:sticky;top:0;z-index:50;background:rgba(247,245,239,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--borde)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:84px}
+  .nav img{height:58px;width:auto}
+  .nav ul{display:flex;gap:28px;list-style:none;font-weight:500}
+  .nav ul a:hover{color:var(--primario)}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--primario);color:#fff;padding:12px 24px;border-radius:50px;font-weight:600;transition:.25s;border:none;cursor:pointer;font-family:inherit;font-size:1rem}
+  .btn:hover{background:var(--primario-osc);transform:translateY(-2px);box-shadow:0 8px 20px color-mix(in srgb,var(--primario) 35%,transparent)}
+  .btn.outline{background:transparent;color:var(--negro);border:2px solid var(--negro)}
+  .btn.outline:hover{background:var(--negro);color:#fff;box-shadow:none}
+  .btn.nar{background:var(--naranja)}
+  .btn.nar:hover{background:var(--naranja-osc);box-shadow:0 8px 20px color-mix(in srgb,var(--naranja) 35%,transparent)}
+  .menu-toggle{display:none;background:none;border:none;font-size:1.9rem;cursor:pointer;color:var(--negro);line-height:1}
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;padding:70px 0 100px}
+  .hero::before{content:"";position:absolute;right:-180px;top:-120px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--primario) 18%,transparent),transparent 70%)}
+  .hero::after{content:"";position:absolute;left:-200px;bottom:-220px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--naranja) 14%,transparent),transparent 70%)}
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center;position:relative;z-index:1}
+  .tag{display:inline-block;background:#fff;border:1px solid var(--borde);padding:6px 16px;border-radius:50px;font-size:.85rem;font-weight:600;color:var(--primario)}
+  .hero-logo{height:130px;width:auto;margin-bottom:18px}
+  .hero h1{font-size:clamp(2.5rem,6vw,4.2rem);line-height:1.05;margin:18px 0;font-weight:800}
+  .hero h1 .script{color:var(--primario);font-size:1.2em;display:block;line-height:1.15;margin-bottom:6px}
+  .hero p{color:var(--gris);font-size:1.1rem;max-width:520px;margin-bottom:30px}
+  .hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-img{position:relative}
+  .hero-img .foto{width:100%;border-radius:32px;aspect-ratio:1;object-fit:cover;box-shadow:0 30px 60px rgba(0,0,0,.18);border:10px solid #fff}
+  .badge{position:absolute;white-space:nowrap;background:#fff;border-radius:18px;padding:12px 18px;box-shadow:0 12px 30px rgba(0,0,0,.12);font-weight:600;display:flex;align-items:center;gap:10px;font-size:.92rem}
+  .badge.b1{left:-24px;bottom:40px}.badge.b2{right:-14px;top:30px}
+  .badge span{font-size:1.6rem}
+
+  /* SECCIONES */
+  section{padding:90px 0}
+  .titulo{text-align:center;margin-bottom:46px}
+  .titulo .script{color:var(--naranja);font-size:2.6rem;line-height:1.1}
+  .titulo h2{font-size:clamp(2rem,4vw,2.8rem);font-weight:800;line-height:1.1}
+
+  /* MENU (estilo pizarra, como el del local) */
+  #menu{background:var(--pizarra);color:#fff;position:relative}
+  #menu .titulo h2{color:#fff}
+  .tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+  .tab{padding:10px 22px;border-radius:50px;border:2px solid #3b4146;background:transparent;color:#e9ecea;font-family:inherit;font-weight:600;cursor:pointer;transition:.2s;font-size:.95rem}
+  .tab.active,.tab:hover{background:var(--primario);color:#fff;border-color:var(--primario)}
+  .grid-menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;align-items:start}
+  .seccion{background:#2c3135;border:1px solid #394045;border-radius:22px;padding:24px;animation:fade .4s ease;position:relative;overflow:hidden}
+  .seccion::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--primario),var(--naranja))}
+  .seccion-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .seccion-head .ico{width:52px;height:52px;border-radius:14px;background:#363c41;display:grid;place-items:center;font-size:1.7rem;flex-shrink:0}
+  .seccion h3{font-weight:800;font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase;color:#fff}
+  .seccion h3::after{content:"";display:block;width:46px;height:3px;background:var(--naranja);border-radius:3px;margin-top:4px}
+  .seccion .sub{color:#b9c0bc;font-size:.85rem;margin:6px 0 4px}
+  .plato-row{padding:11px 0;border-bottom:1px dashed #3d4449}
+  .plato-row:last-child{border-bottom:none;padding-bottom:0}
+  .plato-row .top{display:flex;align-items:baseline;gap:8px}
+  .plato-row h4{font-size:.98rem;font-weight:600;color:#f1f3f2}
+  .plato-row .dots{flex:1;border-bottom:2px dotted #4a5258;transform:translateY(-4px)}
+  .precio{background:var(--primario);color:#fff;font-weight:700;white-space:nowrap;border-radius:50px;padding:1px 12px;font-size:.92rem}
+  .plato-row p{color:#b9c0bc;font-size:.86rem;margin-top:2px}
+  .plato-row .meta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:5px}
+  .extra{font-size:.76rem;font-weight:700;background:#3a4045;color:#ffd2ad;padding:2px 10px;border-radius:50px;border:1px solid #4a5258}
+  .pedir{font-size:.8rem;font-weight:600;color:#fff;border-bottom:2px solid var(--naranja);white-space:nowrap;margin-left:auto}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .nota{text-align:center;color:#b9c0bc;font-size:.85rem;margin-top:30px}
+
+  /* NOSOTROS */
+  .about{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  .about-img{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .about-img img{border-radius:22px;aspect-ratio:3/4;object-fit:cover}
+  .about-img img:nth-child(2){margin-top:50px}
+  .about h2{font-size:2.4rem;font-weight:800;line-height:1.1;margin:8px 0 18px}
+  .about p{color:var(--gris);margin-bottom:16px}
+  .stats{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap}
+  .stats b{display:block;font-size:2rem;color:var(--primario);font-weight:800;line-height:1}
+  .stats small{color:var(--gris);font-weight:500}
+
+  /* INFO */
+  #visitanos{background:var(--negro);color:#fff}
+  #visitanos .titulo h2{color:#fff}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{background:#353a3f;border-radius:22px;padding:32px;border:1px solid #42484d}
+  .card .ic{font-size:2rem;margin-bottom:12px}
+  .card h3{margin-bottom:8px;font-size:1.2rem}
+  .card p,.card li{color:#d0d5d2;font-size:.95rem}
+  .card ul{list-style:none}
+  .card li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed #4a5056;padding:5px 0}
+  .card a.btn{margin-top:16px}
+  .tel-link{display:block;font-weight:700;color:#fff;font-size:1.1rem;margin-top:6px}
+  .tel-link:hover{color:#ffd2ad}
+  .mapa{margin-top:28px;border-radius:22px;overflow:hidden;border:1px solid #42484d;height:320px;background:#353a3f}
+  .mapa iframe{width:100%;height:100%;border:0;filter:grayscale(.15)}
+
+  .pagos{margin-top:28px;background:#353a3f;border:1px solid #42484d;border-radius:22px;padding:26px 30px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:space-between}
+  .pagos h3{font-size:1.15rem}
+  .pagos p{color:#d0d5d2;font-size:.9rem}
+  .chips{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{background:#2c3135;border:1px solid #4a5056;border-radius:50px;padding:10px 18px;font-weight:600;font-size:.92rem;display:flex;gap:8px;align-items:center}
+  .chip.sinpe{background:var(--primario);border-color:var(--primario)}
+  /* CTA */
+  .cta{background:linear-gradient(120deg,var(--primario),color-mix(in srgb,var(--primario) 75%,#fff));color:#fff;border-radius:30px;padding:56px;text-align:center;margin:-40px auto 0;position:relative;overflow:hidden}
+  .cta::after{content:"";position:absolute;left:50%;top:-80px;width:340px;height:160px;transform:translateX(-50%);border:10px solid color-mix(in srgb,var(--naranja) 60%,transparent);border-bottom:none;clip-path:polygon(0 100%,50% 0,100% 100%)}
+  .cta h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;line-height:1.1;position:relative}
+  .cta p{opacity:.92;margin:12px 0 26px;position:relative}
+  .cta .btn{background:#fff;color:var(--primario);position:relative}
+  .cta .btn:hover{background:var(--naranja);color:#fff}
+
+  footer{padding:60px 0 30px;text-align:center}
+  footer img{height:90px;width:auto;margin:0 auto 14px}
+  footer small{color:var(--gris)}
+  footer .tels a{font-weight:600;color:var(--primario)}
+
+  .wa-float{position:fixed;right:22px;bottom:22px;width:60px;height:60px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 10px 25px rgba(37,211,102,.45);z-index:60;transition:.2s}
+  .wa-float.llamar{background:var(--primario);box-shadow:0 10px 25px color-mix(in srgb,var(--primario) 45%,transparent)}
+  .wa-float:hover{transform:scale(1.08)}
+
+  /* TARJETA CLIENTE */
+  #tarjeta{background:var(--crema)}
+  .lealtad{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+  .lealtad h3{font-size:1.6rem;font-weight:800;line-height:1.2;margin-bottom:12px}
+  .reglas{list-style:none;margin:18px 0 26px}
+  .reglas li{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;color:var(--gris)}
+  .reglas b{color:var(--negro)}
+  .reglas .n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--primario);color:#fff;display:grid;place-items:center;font-weight:700;font-size:.9rem}
+  .vcard{position:relative;border-radius:26px;padding:28px;color:#fff;background:linear-gradient(135deg,#23272B 0%,#2c3337 55%,color-mix(in srgb,var(--primario) 30%,#111) 100%);box-shadow:0 30px 60px rgba(0,0,0,.25);overflow:hidden;min-height:320px}
+  .vcard::after{content:"";position:absolute;right:-90px;top:-90px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--naranja) 45%,transparent),transparent 70%)}
+  .vcard-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
+  .vcard-logo{background:#fff;border-radius:14px;padding:6px 10px}
+  .vcard-logo img{height:44px;width:auto}
+  .vcard small{opacity:.7;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+  .vcard .nombre{font-size:1.25rem;font-weight:700;margin-top:2px}
+  .sellos{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:26px 0 18px;position:relative;z-index:1}
+  .sello{aspect-ratio:1;border-radius:50%;border:2px dashed rgba(255,255,255,.3);display:grid;place-items:center;font-size:1.3rem;color:rgba(255,255,255,.35);font-weight:700;transition:.3s}
+  .sello.on{background:var(--primario);border:2px solid color-mix(in srgb,var(--primario) 70%,#fff);color:#fff;box-shadow:0 0 18px color-mix(in srgb,var(--primario) 55%,transparent);animation:pop .35s}
+  .sello.premio{border-color:#ffc58f;color:#ffc58f}
+  .sello.premio.on{background:var(--naranja);border-color:var(--naranja)}
+  @keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+  .vcard-bottom{display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:1;gap:10px}
+  .codigo{font-family:monospace;font-size:1.05rem;letter-spacing:.12em}
+  .progreso{font-weight:700;color:#ffc58f}
+  .premio-banner{display:none;margin-top:16px;background:var(--naranja);color:#fff;border-radius:14px;padding:12px 16px;font-weight:700;text-align:center;position:relative;z-index:1}
+  .premio-banner.show{display:block;animation:pop .4s}
+  .acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+  .btn.dark{background:var(--negro)}
+  .btn.dark:hover{background:#444a50;box-shadow:none}
+  .link-sm{background:none;border:none;color:var(--gris);font-family:inherit;font-size:.82rem;text-decoration:underline;cursor:pointer}
+  .registro{background:#fff;border:1px solid var(--borde);border-radius:22px;padding:28px}
+  .campo{margin-bottom:14px}
+  .campo label{display:block;font-weight:600;font-size:.88rem;margin-bottom:6px}
+  .campo input{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--borde);font-family:inherit;font-size:1rem;background:var(--crema)}
+  .campo input:focus{outline:none;border-color:var(--primario)}
+  .msg{font-size:.88rem;font-weight:600;margin:6px 0 12px;min-height:1.2em}
+  .msg.err{color:#c62f2f}.msg.ok{color:#1a8a4b}
+  .toast{position:fixed;left:50%;bottom:30px;white-space:nowrap;max-width:94vw;overflow:hidden;text-overflow:ellipsis;transform:translateX(-50%) translateY(120px);background:var(--negro);color:#fff;padding:14px 22px;border-radius:50px;font-weight:600;z-index:120;transition:.35s;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .acepto{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;color:var(--gris);margin:4px 0 12px;cursor:pointer}
+  .acepto input{width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--primario)}
+  .acepto a{color:var(--primario);text-decoration:underline}
+  .aviso{display:none;background:var(--crema);border:1px solid var(--borde);border-radius:14px;padding:14px 16px;font-size:.8rem;color:var(--gris);margin-bottom:12px;max-height:260px;overflow:auto}
+  .aviso.show{display:block}.aviso p{margin-top:6px}.aviso b{color:var(--negro)}
+
+  /* CARRITO */
+  .add-btns{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+  .add{font-family:inherit;font-size:.78rem;font-weight:700;border:1.5px solid var(--naranja);background:transparent;color:#ffd2ad;border-radius:50px;padding:4px 12px;cursor:pointer;transition:.2s;white-space:nowrap}
+  .add:hover,.add.ok{background:var(--naranja);color:#fff}
+  .car-fab{position:fixed;right:22px;bottom:22px;z-index:61;background:var(--naranja);color:#fff;border:none;border-radius:50px;padding:14px 20px;font-family:inherit;font-weight:700;font-size:.95rem;display:none;align-items:center;gap:10px;cursor:pointer;box-shadow:0 10px 25px color-mix(in srgb,var(--naranja) 45%,transparent);transition:.2s}
+  .car-fab.show{display:flex;animation:pop .35s}
+  .car-fab:hover{background:var(--naranja-osc)}
+  .car-fab .cnt{background:#fff;color:var(--naranja);border-radius:50px;min-width:24px;height:24px;display:grid;place-items:center;font-size:.8rem;padding:0 6px}
+  .car-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;opacity:0;pointer-events:none;transition:.25s}
+  .car-overlay.show{opacity:1;pointer-events:auto}
+  .carrito{position:fixed;top:0;right:0;height:100%;width:min(420px,100%);background:#fff;z-index:91;transform:translateX(105%);transition:.3s;display:flex;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,.2)}
+  .carrito.show{transform:none}
+  .car-head{display:flex;justify-content:space-between;align-items:center;padding:20px 22px;border-bottom:1px solid var(--borde)}
+  .car-head h3{font-size:1.25rem;font-weight:800}
+  .car-x{background:var(--crema);border:none;width:38px;height:38px;border-radius:50%;font-size:1.3rem;cursor:pointer;color:var(--negro)}
+  .car-body{flex:1 0 auto;padding:12px 22px}
+  .carrito{overflow-y:auto;overscroll-behavior:contain}
+  .car-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed var(--borde)}
+  .car-item .info{flex:1;min-width:0}
+  .car-item b{display:block;font-size:.95rem;line-height:1.3}
+  .car-item small{color:var(--gris)}
+  .qty{display:flex;align-items:center;gap:6px}
+  .qty button{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--borde);background:var(--crema);font-size:1rem;font-weight:700;cursor:pointer;color:var(--negro)}
+  .qty button:hover{border-color:var(--primario);color:var(--primario)}
+  .qty span{min-width:20px;text-align:center;font-weight:700}
+  .car-item .sub{font-weight:700;color:var(--primario);min-width:70px;text-align:right}
+  .car-vacio{text-align:center;color:var(--gris);padding:50px 10px}
+  .car-vacio div{font-size:3rem;margin-bottom:8px}
+  .car-foot{border-top:1px solid var(--borde);padding:18px 22px 22px;background:var(--crema)}
+  .car-total{display:flex;justify-content:space-between;font-size:1.15rem;font-weight:800;margin-bottom:14px}
+  .car-total span:last-child{color:var(--primario)}
+  .car-foot .btn{width:100%;justify-content:center}
+  .car-foot .campo label{font-size:.9rem}
+  .car-foot textarea{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--borde);font-family:inherit;font-size:.95rem;background:#fff;resize:vertical;min-height:64px}
+  .car-foot .campo input{background:#fff}
+  .car-foot textarea:focus{outline:none;border-color:var(--primario)}
+  .car-links{display:flex;justify-content:space-between;margin-top:10px}
+  .car-nota{font-size:.78rem;color:var(--gris);text-align:center;margin-top:10px}
+  .prep{display:flex;gap:10px;align-items:center;background:color-mix(in srgb,var(--primario) 10%,#fff);border:1px solid color-mix(in srgb,var(--primario) 22%,#fff);color:var(--primario-osc);border-radius:12px;padding:10px 14px;font-size:.86rem;font-weight:600;margin-bottom:14px}
+  .retiro{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .retiro button{font-family:inherit;font-size:.9rem;font-weight:600;border:1.5px solid var(--borde);background:#fff;color:var(--negro);border-radius:12px;padding:10px 8px;cursor:pointer;transition:.15s}
+  .retiro button small{display:block;font-weight:500;color:var(--gris);font-size:.75rem}
+  .retiro button.sel{border-color:var(--primario);background:color-mix(in srgb,var(--primario) 10%,#fff);color:var(--primario-osc)}
+  .retiro button.sel small{color:var(--primario-osc)}
+  .nota-prep{display:inline-flex;gap:8px;align-items:center;background:#2c3135;border:1px solid #394045;border-radius:50px;padding:8px 18px;color:#e9ecea;font-weight:600;font-size:.9rem;margin-bottom:26px}
+
+  @media(max-width:900px){
+    .lealtad,.hero-grid,.about{grid-template-columns:1fr}
+    .hero{padding:36px 0 70px}
+    .hero-logo{height:96px}
+    .hero-img{max-width:340px;width:85%;margin:30px auto 0}
+    .badge{font-size:.8rem;padding:8px 12px;border-radius:14px}
+    .badge span{font-size:1.2rem}
+    .badge.b1{left:-14px;bottom:18px}
+    .badge.b2{right:-14px;top:14px}
+    .hero-btns .btn{flex:1;justify-content:center;min-width:220px}
+    .cards{grid-template-columns:1fr}
+    .nav ul{position:absolute;top:84px;left:0;right:0;flex-direction:column;background:var(--crema);padding:20px 6%;gap:16px;border-bottom:1px solid var(--borde);display:none}
+    .nav ul.open{display:flex}
+    .menu-toggle{display:block}
+    .nav .btn{display:none}
+    .cta{padding:40px 24px}
+  }
+  @media(max-width:420px){.grid-menu{grid-template-columns:1fr}.seccion{padding:18px}}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav wrap">
+    <a href="#inicio"><img src="logo.png" alt="{{nombre}}"></a>
+    <ul id="links">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#menu">Menú</a></li>
+<!--@tarjeta-->      <li><a href="#tarjeta">Tarjeta cliente</a></li>
+<!--/@tarjeta-->      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#visitanos">Visítanos</a></li>
+    </ul>
+    <a class="btn" href="#menu" data-armar>🛒 Armar pedido</a>
+    <button class="menu-toggle" aria-label="Abrir menú" onclick="document.getElementById('links').classList.toggle('open')">☰</button>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="wrap hero-grid">
+    <div>
+      <img class="hero-logo" src="logo.png" alt="{{nombre}} – {{lema}}">
+      <span class="tag">{{hero.etiqueta}}</span>
+      <h1><span class="script">{{hero.tituloScript}}</span> {{hero.titulo}}</h1>
+      <p>{{hero.texto}}</p>
+      <div class="hero-btns">
+        <a href="#menu" class="btn">Ver menú →</a>
+        <a href="#menu" class="btn outline" data-armar>🛒 Armar mi pedido</a>
+      </div>
+    </div>
+    <div class="hero-img">
+      <img class="foto" src="{{hero.imagen}}" alt="{{hero.imagenAlt}}">
+{{{badgesHtml}}}
+    </div>
+  </div>
+</section>
+
+<!-- MENÚ -->
+<section id="menu">
+  <div class="wrap">
+    <div class="titulo">
+      <span class="script">Nuestro</span>
+      <h2>Menú</h2>
+    </div>
+    <div style="text-align:center"><span class="nota-prep">⏱️ Todo se prepara al momento · tiempo aprox. <span class="tPrep"></span></span></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="grid-menu" id="grid"></div>
+    <p class="nota">🛒 Agregá productos, tocá <b>Ver pedido</b> y elegí a qué hora pasás a retirarlo · Precios en colones, sujetos a cambio.</p>
+  </div>
+</section>
+
+<!--@tarjeta-->
+<!-- TARJETA VIRTUAL DE CLIENTE (Firebase) -->
+<section id="tarjeta">
+  <div class="wrap">
+    <div class="titulo">
+      <span class="script">Cliente frecuente</span>
+      <h2>Tarjeta {{nombreCorto}}</h2>
+    </div>
+    <div class="lealtad">
+      <div>
+        <h3>Completá <span id="reglaMeta">10</span> sellos y te regalamos un <span style="color:var(--primario)" id="reglaPremio">lápiz corriente gratis</span></h3>
+        <ul class="reglas">
+          <li><span class="n">1</span><div><b>Registrate</b> con tu teléfono y tu nombre. Tu tarjeta queda guardada en línea: no se pierde aunque cambiés de celular.</div></li>
+          <li><span class="n">2</span><div><b>Cada compra de <span id="reglaMonto">₡3.000</span> o más</b> suma un sello. Al pagar, decí tu número de teléfono en la caja.</div></li>
+          <li><span class="n">3</span><div><b>Al completar los sellos</b>, canjeás tu premio en la caja y la tarjeta empieza de nuevo.</div></li>
+        </ul>
+        <div class="registro" id="pasoConsulta">
+          <div class="campo"><label for="cTel">Tu teléfono</label><input id="cTel" placeholder="Ej: 8888-8888" inputmode="tel" autocomplete="tel"></div>
+          <div id="pasoNombre" style="display:none">
+            <div class="campo"><label for="cNombreInput">Nombre completo</label><input id="cNombreInput" placeholder="Ej: María Rodríguez" autocomplete="name"></div>
+            <label class="acepto"><input type="checkbox" id="cAcepto"> <span>Acepto que {{nombre}} guarde mi nombre y teléfono para el programa de cliente frecuente, según el <a href="#" id="verAviso">aviso de privacidad</a>.</span></label>
+            <div class="aviso" id="aviso">
+              <b>Aviso de privacidad — Tarjeta {{nombreCorto}}</b>
+              <p><b>Responsable:</b> {{nombre}}, {{config.direccion}} (teléfonos {{telefonosTexto}}). Soporte técnico: {{soporte}}.</p>
+              <p><b>Datos que guardamos:</b> tu nombre, tu número de teléfono, tus sellos, premios canjeados y la fecha y monto de las compras registradas en caja.</p>
+              <p><b>Para qué:</b> únicamente para administrar el programa de cliente frecuente. No vendemos ni compartimos tus datos con terceros ni los usamos para publicidad.</p>
+              <p><b>Dónde se guardan:</b> en la base de datos de Google Firebase, protegida con reglas de seguridad. Solo el personal autorizado de {{nombreCorto}} puede ver la lista de clientes.</p>
+              <p><b>Tus derechos:</b> podés pedir ver, corregir o eliminar tus datos cuando quieras, llamando al {{telefono1}} o pidiéndolo en la caja. Respondemos en un plazo máximo de 5 días hábiles.</p>
+              <p>Ley N.° 8968 de Protección de la Persona frente al Tratamiento de sus Datos Personales.</p>
+            </div>
+            <button class="btn" id="btnCrear" style="margin-bottom:10px">Crear mi tarjeta</button>
+          </div>
+          <div class="msg" id="cMsg"></div>
+          <button class="btn dark" id="btnConsultar">Ver o crear mi tarjeta</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="vcard" id="vcard">
+          <div class="vcard-top">
+            <div>
+              <small>Tarjeta de cliente</small>
+              <div class="nombre" id="cNombre">Tu nombre aquí</div>
+            </div>
+            <div class="vcard-logo"><img src="logo.png" alt="{{nombreCorto}}"></div>
+          </div>
+          <div class="sellos" id="sellos"></div>
+          <div class="vcard-bottom">
+            <div><small>Tu número</small><div class="codigo" id="cCodigo">0000-0000</div></div>
+            <div class="progreso" id="cProg">0 / 10 sellos</div>
+          </div>
+          <div class="premio-banner" id="premio">¡Ganaste tu premio! Pedilo en la caja.</div>
+        </div>
+        <div class="acciones" id="acciones" style="display:none;align-items:center;justify-content:space-between">
+          <small id="canjes" style="color:var(--gris)"></small>
+          <button class="link-sm" id="btnSalir">Usar otro número</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/@tarjeta-->
+<div class="toast" id="toast"></div>
+
+<!-- NOSOTROS -->
+<section id="nosotros" style="background:#fff">
+  <div class="wrap about">
+    <div class="about-img">
+      {{{historiaImgsHtml}}}
+    </div>
+    <div>
+      <span class="script" style="color:var(--naranja);font-size:2.6rem">{{historia.script}}</span>
+      <h2>{{historia.titulo}}</h2>
+      {{{historiaParrafosHtml}}}
+      <div class="stats">
+        {{{statsHtml}}}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISÍTANOS -->
+<section id="visitanos">
+  <div class="wrap">
+    <div class="titulo">
+      <span class="script">Te esperamos</span>
+      <h2>Visítanos</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="ic">📍</div>
+        <h3>Ubicación</h3>
+        <p id="direccion"></p>
+        <a class="btn nar" id="maps" href="#" target="_blank" rel="noopener">Cómo llegar</a>
+      </div>
+      <div class="card">
+        <div class="ic">🕒</div>
+        <h3>Horario</h3>
+        <ul id="horario"></ul>
+      </div>
+      <div class="card">
+        <div class="ic">📞</div>
+        <h3>Pedidos</h3>
+        <p>Armá tu pedido en el menú, elegí a qué hora pasás y envialo por WhatsApp. O llamanos. Lo tenemos listo a la hora que indiqués.</p>
+        <div id="telefonos"></div>
+        <a class="btn nar" href="#menu" data-armar>🛒 Armar mi pedido</a>
+      </div>
+    </div>
+    <div class="mapa"><iframe id="mapaFrame" title="Mapa de {{nombre}}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+    <div class="pagos">
+      <div>
+        <h3>Formas de pago</h3>
+        <p>Pagá como te quede más cómodo.</p>
+      </div>
+      <div class="chips" id="pagos"></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="cta">
+    <h2>{{cta.titulo}}</h2>
+    <p>{{cta.texto}}</p>
+    <a class="btn" href="#menu" data-armar>🛒 Armar mi pedido</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <img src="logo.png" alt="{{nombre}}">
+    <p class="tels" style="margin-bottom:6px" id="telsFooter"></p>
+    <small>© <span id="year"></span> {{nombre}} · {{lema}}<!--@tarjeta--> · <a href="personal.html" style="text-decoration:underline">Acceso personal</a><!--/@tarjeta--></small>
+  </div>
+</footer>
+
+<button class="car-fab" id="carFab" aria-label="Ver carrito">🛒 Ver pedido <span class="cnt" id="carCnt">0</span> <span id="carFabTotal"></span></button>
+<div class="car-overlay" id="carOverlay"></div>
+<aside class="carrito" id="carrito" aria-label="Tu pedido">
+  <div class="car-head"><h3>🛒 Tu pedido</h3><button class="car-x" id="carCerrar" aria-label="Cerrar">×</button></div>
+  <div class="car-body" id="carLista"></div>
+  <div class="car-foot" id="carFoot">
+    <div id="paso1">
+      <div class="prep">⏱️ Todo se prepara al momento. Tiempo aprox.: <span class="tPrep"></span></div>
+      <div class="car-total"><span>Total</span><span id="carTotal">₡0</span></div>
+      <button class="btn" id="btnOrdenar">Ordenar →</button>
+      <div class="car-links"><button class="link-sm" id="btnSeguir">← Seguir agregando</button><button class="link-sm" id="btnVaciar">Vaciar pedido</button></div>
+    </div>
+    <div id="paso2" style="display:none">
+      <div class="car-total"><span>Total</span><span id="carTotal2">₡0</span></div>
+      <div class="campo"><label for="pNombre">¿A nombre de quién es el pedido?</label><input id="pNombre" placeholder="Ej: María Rodríguez" autocomplete="name" maxlength="60"></div>
+      <div class="campo"><label>¿A qué hora pasás a retirarlo?</label><div class="retiro" id="retiroOps"></div><input type="time" id="pHora" style="display:none;margin-top:8px"></div>
+      <div class="campo"><label for="pNota">Nota para la cocina <span style="font-weight:400;color:var(--gris)">(opcional)</span></label><textarea id="pNota" placeholder="Ej: sin cebolla, salsa aparte…" maxlength="300"></textarea></div>
+      <div class="msg" id="pMsg"></div>
+      <a class="btn" id="btnEnviar" href="#" target="_blank" rel="noopener" style="background:#25D366">💬 Enviar pedido por WhatsApp</a>
+      <div class="car-links"><button class="link-sm" id="btnVolver">← Volver al pedido</button></div>
+      <p class="car-nota">Se abre WhatsApp con tu pedido y la hora de retiro; solo tocá enviar. Lo tenemos listo a esa hora, no hace falta que preguntés.</p>
+    </div>
+  </div>
+</aside>
+
+
+<script type="module">
+import { NEGOCIO, CONFIG, MENU } from "./negocio.js";
+
+/* ====================== lógica ====================== */
+const tieneWA = !!CONFIG.whatsapp;
+const telDigitos = t => t.replace(/\D/g, "");
+function esc(t){ return String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+const waLink = msg => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
+const telLink = "tel:+506" + telDigitos(CONFIG.telefonos[0]);
+const pedidoLink = msg => tieneWA ? waLink(msg) : telLink;
+const TODO = "Todo el menú";
+const etiquetaExtra = t => String(t).replace(/₡\s?[\d.,]+/g, "").trim() || "Extra";
+const num = t => parseInt(String(t).replace(/\D/g, ""), 10) || 0;
+const colones = n => "₡" + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+function pintarCategoria(cat){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.cat===cat));
+  const secciones = cat === TODO ? Object.values(MENU).flat() : MENU[cat];
+  document.getElementById("grid").innerHTML = secciones.map(sec=>`
+    <div class="seccion">
+      <div class="seccion-head">
+        ${sec.ico?`<div class="ico" aria-hidden="true">${sec.ico}</div>`:''}
+        <h3>${sec.titulo}</h3>
+      </div>
+      ${sec.sub?`<p class="sub">${sec.sub}</p>`:''}
+      ${sec.platos.map(p=>`
+        <div class="plato-row">
+          <div class="top"><h4>${p.nombre}</h4><span class="dots"></span><span class="precio">${p.precio}</span></div>
+          ${p.desc?`<p>${p.desc}</p>`:''}
+          <div class="meta">${p.extra?`<span class="extra">${p.extra}</span>`:''}${p.sinPedido?'':`<div class="add-btns">
+            <button class="add" data-add="${esc(p.nombre)}" data-precio="${num(p.precio)}">+ Agregar</button>
+            ${p.extra?`<button class="add" data-add="${esc(p.nombre+" "+etiquetaExtra(p.extra).toLowerCase())}" data-precio="${num(p.extra)}">+ ${esc(etiquetaExtra(p.extra))}</button>`:''}
+          </div>`}</div>
+        </div>`).join("")}
+    </div>`).join("");
+  document.querySelectorAll("#grid .add").forEach(b=>b.onclick=()=>{
+    agregar(b.dataset.add, +b.dataset.precio);
+    b.classList.add("ok"); const t=b.textContent; b.textContent="✓ Agregado";
+    setTimeout(()=>{b.classList.remove("ok"); b.textContent=t;}, 900);
+  });
+}
+
+const cats = [TODO, ...Object.keys(MENU)];
+document.getElementById("tabs").innerHTML = cats.map(c=>`<button class="tab" data-cat="${c}">${c}</button>`).join("");
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>pintarCategoria(t.dataset.cat));
+pintarCategoria(TODO);
+
+// Botones "Armar pedido": llevan al menú (no abren un chat vacío).
+document.querySelectorAll("[data-armar]").forEach(a=>a.onclick=e=>{
+  e.preventDefault();
+  if (typeof cantCar === "function" && cantCar() > 0) abrirCar();
+  else document.getElementById("menu").scrollIntoView({behavior:"smooth"});
+});
+document.querySelectorAll(".tPrep").forEach(el=>el.textContent = CONFIG.tiempoPrep);
+
+document.getElementById("direccion").textContent = CONFIG.direccion;
+document.getElementById("maps").href = CONFIG.mapsUrl;
+document.getElementById("mapaFrame").src = CONFIG.mapaEmbed;
+document.getElementById("telefonos").innerHTML = CONFIG.telefonos.map(t=>`<a class="tel-link" href="tel:+506${telDigitos(t)}">📞 ${t}</a>`).join("");
+document.getElementById("telsFooter").innerHTML = CONFIG.telefonos.map(t=>`<a href="tel:+506${telDigitos(t)}">${t}</a>`).join(" · ");
+document.getElementById("horario").innerHTML = CONFIG.horario.map(([d,h])=>`<li><span>${d}</span><span>${h}</span></li>`).join("");
+document.getElementById("pagos").innerHTML = CONFIG.pagos.map((p,i)=>`<span class="chip ${p.includes("SINPE")?"sinpe":""}">${p}</span>`).join("");
+document.getElementById("year").textContent = new Date().getFullYear();
+document.querySelectorAll(".anios").forEach(el => el.textContent = (new Date().getFullYear() - NEGOCIO.fundado) + "");
+
+/* ====================== CARRITO ====================== */
+const CAR_KEY = NEGOCIO.id + "_carrito";
+let carrito = [];
+try { carrito = JSON.parse(localStorage.getItem(CAR_KEY)) || []; } catch (e) { carrito = []; }
+const guardarCar = () => { try { localStorage.setItem(CAR_KEY, JSON.stringify(carrito)); } catch (e) {} };
+const $c = id => document.getElementById(id);
+const totalCar = () => carrito.reduce((s,i)=>s+i.precio*i.cant,0);
+const cantCar = () => carrito.reduce((s,i)=>s+i.cant,0);
+
+
+function avisar(m){ const t=$c("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(avisar.t); avisar.t=setTimeout(()=>t.classList.remove("show"),2200); }
+
+function agregar(nombre, precio){
+  const it = carrito.find(i=>i.nombre===nombre);
+  if (it) it.cant++; else carrito.push({nombre, precio, cant:1});
+  guardarCar(); pintarCarrito(); avisar(`✓ ${nombre} agregado`);
+}
+function cambiar(idx, d){
+  carrito[idx].cant += d;
+  if (carrito[idx].cant <= 0) carrito.splice(idx,1);
+  guardarCar(); pintarCarrito();
+}
+function pintarCarrito(){
+  const n = cantCar(), tot = colones(totalCar());
+  $c("carCnt").textContent = n; $c("carFabTotal").textContent = tot;
+  $c("carFab").classList.toggle("show", n>0);
+  $c("carTotal").textContent = tot; $c("carTotal2").textContent = tot;
+  $c("carFoot").style.display = n ? "" : "none";
+  $c("carLista").innerHTML = n ? carrito.map((i,k)=>`
+    <div class="car-item">
+      <div class="info"><b>${esc(i.nombre)}</b><small>${colones(i.precio)} c/u</small></div>
+      <div class="qty"><button data-k="${k}" data-d="-1" aria-label="Quitar uno">−</button><span>${i.cant}</span><button data-k="${k}" data-d="1" aria-label="Agregar uno">+</button></div>
+      <div class="sub">${colones(i.precio*i.cant)}</div>
+    </div>`).join("") : `<div class="car-vacio"><div>🛒</div>Tu pedido está vacío.<br>Agregá productos desde el menú.</div>`;
+  $c("carLista").querySelectorAll(".qty button").forEach(b=>b.onclick=()=>cambiar(+b.dataset.k, +b.dataset.d));
+  if (!n) paso(1);
+  armarMensaje();
+}
+function paso(p){ $c("paso1").style.display = p===1?"":"none"; $c("paso2").style.display = p===2?"":"none"; }
+function abrirCar(){ $c("carrito").classList.add("show"); $c("carOverlay").classList.add("show"); }
+function cerrarCar(){ $c("carrito").classList.remove("show"); $c("carOverlay").classList.remove("show"); }
+
+/* --- hora de retiro --- */
+let retiroSel = null;   // número de minutos, o "hora"
+const fmtHora = d => d.toLocaleTimeString("es-CR", {hour:"numeric", minute:"2-digit", hour12:true}).replace(/\s+/g," ");
+function pintarRetiro(){
+  const ops = CONFIG.retiroOpciones.map(m=>`<button type="button" data-r="${m}" class="${retiroSel===m?"sel":""}">En ${m===60?"1 hora":m+" min"}<small>aprox. ${fmtHora(new Date(Date.now()+m*60000))}</small></button>`);
+  ops.push(`<button type="button" data-r="hora" class="${retiroSel==="hora"?"sel":""}">Elegir hora<small>más tarde hoy</small></button>`);
+  $c("retiroOps").innerHTML = ops.join("");
+  $c("retiroOps").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    retiroSel = b.dataset.r === "hora" ? "hora" : +b.dataset.r;
+    $c("pHora").style.display = retiroSel === "hora" ? "" : "none";
+    if (retiroSel === "hora") { if (!$c("pHora").value) { const d=new Date(Date.now()+60*60000); $c("pHora").value = String(d.getHours()).padStart(2,"0")+":"+String(Math.ceil(d.getMinutes()/5)*5%60).padStart(2,"0"); } $c("pHora").focus(); }
+    $c("pMsg").textContent=""; pintarRetiro(); armarMensaje();
+  });
+}
+function horaRetiro(){   // devuelve {fecha, texto} o {error}
+  if (retiroSel === null) return {error:"Elegí a qué hora pasás a retirarlo."};
+  if (retiroSel !== "hora") { const f=new Date(Date.now()+retiroSel*60000); return {fecha:f, texto:`${fmtHora(f)} (en ${retiroSel===60?"1 hora":retiroSel+" min"})`}; }
+  const v = $c("pHora").value;
+  if (!v) return {error:"Escribí la hora a la que pasás."};
+  const [h,m] = v.split(":").map(Number); const f = new Date(); f.setHours(h,m,0,0);
+  if (f - Date.now() < CONFIG.retiroMinimo*60000) return {error:`Elegí una hora con al menos ${CONFIG.retiroMinimo} min de anticipación.`};
+  return {fecha:f, texto:fmtHora(f)};
+}
+
+function armarMensaje(){
+  const nombre = $c("pNombre").value.trim().replace(/\s+/g," ");
+  const nota = $c("pNota").value.trim();
+  const lineas = carrito.map(i=>`• ${i.cant} x ${i.nombre} — ${colones(i.precio*i.cant)}`);
+  const r = horaRetiro();
+  const msg = `Hola ${NEGOCIO.nombreCorto}, quiero hacer un pedido para retirar 🛒\n\n*A nombre de:* ${nombre}\n*Paso a retirarlo:* ${r.texto || "-"}\n\n${lineas.join("\n")}\n\n*Total: ${colones(totalCar())}*` + (nota ? `\n\n*Nota:* ${nota}` : "") + `\n\nNo hace falta confirmar, paso a la hora indicada. ¡Gracias!`;
+  $c("btnEnviar").href = waLink(msg);
+}
+
+$c("carFab").onclick = abrirCar;
+$c("carCerrar").onclick = cerrarCar;
+$c("carOverlay").onclick = cerrarCar;
+$c("btnSeguir").onclick = () => { cerrarCar(); document.getElementById("menu").scrollIntoView({behavior:"smooth"}); };
+$c("btnVaciar").onclick = () => { carrito = []; guardarCar(); pintarCarrito(); };
+$c("btnOrdenar").onclick = () => { paso(2); $c("pMsg").textContent=""; pintarRetiro(); armarMensaje(); setTimeout(()=>$c("pNombre").focus(),50); };
+$c("btnVolver").onclick = () => paso(1);
+["pNombre","pNota","pHora"].forEach(id=>$c(id).addEventListener("input", ()=>{ armarMensaje(); $c("pMsg").textContent=""; }));
+$c("btnEnviar").onclick = e => {
+  armarMensaje();
+  if ($c("pNombre").value.trim().length < 2) {
+    e.preventDefault();
+    $c("pMsg").className = "msg err"; $c("pMsg").textContent = "Escribí a nombre de quién es el pedido.";
+    $c("pNombre").focus(); return;
+  }
+  const r = horaRetiro();
+  if (r.error) {
+    e.preventDefault();
+    $c("pMsg").className = "msg err"; $c("pMsg").textContent = r.error; return;
+  }
+  try { localStorage.setItem(NEGOCIO.id + "_nombre", $c("pNombre").value.trim()); } catch (err) {}
+  setTimeout(() => {
+    carrito = []; guardarCar(); $c("pNota").value = ""; retiroSel = null; $c("pHora").value = ""; $c("pHora").style.display = "none"; pintarCarrito(); cerrarCar();
+    avisar("¡Listo! Enviá el mensaje en WhatsApp y pasá a la hora indicada.");
+  }, 600);
+};
+try { const nGuardado = localStorage.getItem(NEGOCIO.id + "_nombre"); if (nGuardado) $c("pNombre").value = nGuardado; } catch (e) {}
+document.addEventListener("keydown", e => { if (e.key === "Escape") cerrarCar(); });
+pintarCarrito();
+
+document.querySelectorAll("#links a").forEach(a=>a.onclick=()=>document.getElementById("links").classList.remove("open"));
+</script>
+<!--@tarjeta--><script type="module" src="tarjeta.js"></script><!--/@tarjeta-->
+</body>
+</html>
