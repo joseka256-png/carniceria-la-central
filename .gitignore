@@ -1,8 +1,8 @@
 # Generados por build.mjs (la fuente es negocio.js + src/)
-dist/
-firebase.json
-.firebaserc
-firestore.rules
+/dist/
+/firebase.json
+/.firebaserc
+/firestore.rules
 .firebase/
 node_modules/
 soporte/node_modules/

@@ -1,0 +1,165 @@
+rules_version = '2';
+
+// =========================================================
+//  Reglas de seguridad — Tarjeta {{nombreCorto}}
+//  GENERADO por build.mjs desde src/firestore.rules: no editar dist/
+//  Pegar en: Firebase → Firestore Database → Reglas → Publicar
+//
+//  · Cualquiera puede CREAR su tarjeta (siempre empieza en 0 sellos)
+//    y CONSULTAR una tarjeta si conoce el teléfono exacto.
+//  · Solo el PERSONAL (usuarios con documento en /staff/{uid})
+//    puede sumar sellos, canjear premios, ver historial y listar clientes.
+//  · El cliente solo suma sellos con un QR de UN SOLO USO que genera la caja
+//    (vence en minutos y respeta una espera mínima entre sellos).
+// =========================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function esStaff() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/staff/$(request.auth.uid));
+    }
+
+    // Vienen de LEALTAD en negocio.js
+    function META() { return {{lealtad.meta}}; }
+    function QR_MIN() { return {{lealtad.qrMinutos}}; }        // minutos que dura un QR
+    function ESPERA_MIN() { return {{lealtad.esperaMinutos}}; } // minutos mínimos entre sellos por QR en la misma tarjeta
+
+    function codigo(c) { return get(/databases/$(database)/documents/codigos/$(c)); }
+    function codigoDespues(c) { return getAfter(/databases/$(database)/documents/codigos/$(c)); }
+    // El QR c está vigente, sin usar, y en este mismo lote queda marcado como usado por la tarjeta tel
+    function qrValidoPara(c, tel) {
+      return exists(/databases/$(database)/documents/codigos/$(c))
+        && codigo(c).data.usado == false
+        && request.time < codigo(c).data.creado + duration.value(QR_MIN(), 'm')
+        && codigoDespues(c).data.usado == true
+        && codigoDespues(c).data.usadoPor == tel;
+    }
+
+    // ---------- Personal ----------
+    // Los documentos /staff/{uid} se crean a mano en la consola.
+    match /staff/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+
+    // ---------- Tarjetas (id del documento = teléfono de 8 dígitos) ----------
+    match /tarjetas/{tel} {
+      allow get: if true;              // consultar sabiendo el teléfono
+      allow list: if esStaff();        // buscar / reportes: solo personal
+
+      // Registro del cliente: siempre en 0 sellos
+      allow create: if tel.matches('^[0-9]{8}$')
+        && request.resource.data.keys().hasOnly(['nombre','telefono','sellos','canjes','acepto','aceptoFecha','creada','actualizada'])
+        && request.resource.data.acepto == true
+        && request.resource.data.aceptoFecha == request.time
+        && request.resource.data.telefono == tel
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() >= 3
+        && request.resource.data.nombre.size() <= 60
+        && request.resource.data.sellos == 0
+        && request.resource.data.canjes == 0
+        && request.resource.data.creada == request.time
+        && request.resource.data.actualizada == request.time;
+
+      // Sello por QR (lo hace el CLIENTE desde su celular, sin cuenta):
+      //  · solo con un QR de un solo uso que generó la caja, vigente y sin usar
+      //  · suma exactamente los sellos que trae el QR (sin pasar la meta)
+      //  · respeta la espera mínima entre sellos por QR
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sellos','actualizada','ultimoCodigo','ultimoQR'])
+        && request.resource.data.ultimoCodigo is string
+        && qrValidoPara(request.resource.data.ultimoCodigo, tel)
+        && resource.data.sellos < META()
+        && (
+          ( resource.data.sellos + codigo(request.resource.data.ultimoCodigo).data.sellos <= META()
+            && request.resource.data.sellos == resource.data.sellos + codigo(request.resource.data.ultimoCodigo).data.sellos )
+          ||
+          ( resource.data.sellos + codigo(request.resource.data.ultimoCodigo).data.sellos > META()
+            && request.resource.data.sellos == META() )
+        )
+        && request.resource.data.actualizada == request.time
+        && request.resource.data.ultimoQR == request.time
+        && ( !('ultimoQR' in resource.data)
+             || request.time > resource.data.ultimoQR + duration.value(ESPERA_MIN(), 'm') );
+
+      // Sumar sellos o canjear premio: solo personal
+      allow update: if esStaff()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sellos','canjes','actualizada','nombre'])
+        && request.resource.data.telefono == resource.data.telefono
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() >= 3
+        && request.resource.data.actualizada == request.time
+        && (
+          // sumar sellos (1 o más, sin pasar la meta)
+          ( request.resource.data.sellos > resource.data.sellos
+            && request.resource.data.sellos <= META()
+            && request.resource.data.canjes == resource.data.canjes )
+          ||
+          // canjear premio (tarjeta llena → vuelve a 0)
+          ( resource.data.sellos == META()
+            && request.resource.data.sellos == 0
+            && request.resource.data.canjes == resource.data.canjes + 1 )
+          ||
+          // solo corregir el nombre
+          ( request.resource.data.sellos == resource.data.sellos
+            && request.resource.data.canjes == resource.data.canjes )
+        );
+
+      allow delete: if false;
+
+      // Historial de movimientos: solo personal, y no se puede alterar
+      match /movimientos/{mov} {
+        allow read: if esStaff();
+        allow create: if esStaff()
+          && request.resource.data.tipo in ['sello','sin_sello','canje']
+          && request.resource.data.staffUid == request.auth.uid
+          && request.resource.data.fecha == request.time;
+        // Movimiento del sello por QR: id del documento = código del QR
+        allow create: if request.resource.data.tipo == 'qr'
+          && qrValidoPara(mov, tel)
+          && request.resource.data.keys().hasOnly(['tipo','monto','sellosAgregados','sellosAntes','sellosDespues','staffUid','staffNombre','fecha'])
+          && request.resource.data.monto == codigo(mov).data.monto
+          && request.resource.data.staffUid == codigo(mov).data.staffUid
+          && request.resource.data.staffNombre == codigo(mov).data.staffNombre
+          && request.resource.data.sellosAntes == get(/databases/$(database)/documents/tarjetas/$(tel)).data.sellos
+          && request.resource.data.sellosDespues == getAfter(/databases/$(database)/documents/tarjetas/$(tel)).data.sellos
+          && request.resource.data.sellosAgregados == request.resource.data.sellosDespues - request.resource.data.sellosAntes
+          && request.resource.data.fecha == request.time;
+        allow update, delete: if false;
+      }
+    }
+
+    // ---------- QR de un solo uso (los genera la caja) ----------
+    // id del documento = código aleatorio largo (imposible de adivinar)
+    match /codigos/{c} {
+      allow get: if true;                // el cliente lo consulta para ver si sigue vigente
+      allow list: if esStaff();
+      allow create: if esStaff()
+        && c.size() >= 20
+        && request.resource.data.keys().hasOnly(['sellos','monto','staffUid','staffNombre','creado','usado'])
+        && request.resource.data.sellos is int
+        && request.resource.data.sellos >= 1
+        && request.resource.data.sellos <= META()
+        && request.resource.data.monto is int
+        && request.resource.data.staffUid == request.auth.uid
+        && request.resource.data.creado == request.time
+        && request.resource.data.usado == false;
+      // El cliente lo marca como usado, en el mismo lote en que suma el sello a SU tarjeta
+      allow update: if resource.data.usado == false
+        && request.time < resource.data.creado + duration.value(QR_MIN(), 'm')
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['usado','usadoPor','usadoEn'])
+        && request.resource.data.usado == true
+        && request.resource.data.usadoEn == request.time
+        && request.resource.data.usadoPor is string
+        && request.resource.data.usadoPor.matches('^[0-9]{8}$')
+        && getAfter(/databases/$(database)/documents/tarjetas/$(request.resource.data.usadoPor)).data.ultimoCodigo == c
+        && getAfter(/databases/$(database)/documents/tarjetas/$(request.resource.data.usadoPor)).data.ultimoQR == request.time;
+      allow delete: if false;
+    }
+
+    // Todo lo demás: cerrado
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

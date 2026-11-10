@@ -324,10 +324,10 @@
     </div>
     <div class="lealtad">
       <div>
-        <h3>Completá <span id="reglaMeta">10</span> sellos y te regalamos un <span style="color:var(--primario)" id="reglaPremio">lápiz corriente gratis</span></h3>
+        <h3>Completá <span id="reglaMeta">{{lealtad.meta}}</span> sellos y te regalamos un <span style="color:var(--primario)" id="reglaPremio">{{premioTexto}}</span></h3>
         <ul class="reglas">
           <li><span class="n">1</span><div><b>Registrate</b> con tu teléfono y tu nombre. Tu tarjeta queda guardada en línea: no se pierde aunque cambiés de celular.</div></li>
-          <li><span class="n">2</span><div><b>Cada compra de <span id="reglaMonto">₡3.000</span> o más</b> suma un sello. <span id="reglaComo">Al pagar, decí tu número de teléfono en la caja.</span></div></li>
+          <li><span class="n">2</span><div><b>Cada compra de <span id="reglaMonto">{{montoTexto}}</span> o más</b> suma un sello. <span id="reglaComo">{{reglaComo}}</span></div></li>
           <li><span class="n">3</span><div><b>Al completar los sellos</b>, canjeás tu premio en la caja y la tarjeta empieza de nuevo.</div></li>
         </ul>
         <div class="qr-aviso" id="qrAviso"></div>
@@ -364,7 +364,7 @@
           <div class="sellos" id="sellos"></div>
           <div class="vcard-bottom">
             <div><small>Tu número</small><div class="codigo" id="cCodigo">0000-0000</div></div>
-            <div class="progreso" id="cProg">0 / 10 sellos</div>
+            <div class="progreso" id="cProg">0 / {{lealtad.meta}} sellos</div>
           </div>
           <div class="premio-banner" id="premio">¡Ganaste tu premio! Pedilo en la caja.</div>
         </div>

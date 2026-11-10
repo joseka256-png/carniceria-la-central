@@ -47,6 +47,10 @@ const vars = {
     `<div class="badge b${i + 1}"><span>${esc(ico)}</span> ${esc(txt)}</div>`).join("\n      "),
   historiaImgsHtml: (NEGOCIO.historia.imagenes || []).map(([src, alt]) =>
     `<img src="${esc(src)}" alt="${esc(alt)}">`).join("\n      "),
+  montoTexto: LEALTAD ? "₡" + Number(LEALTAD.montoMinimo).toLocaleString("es-CR").replace(/\s|,/g, ".") : "",
+  premioTexto: LEALTAD ? String(LEALTAD.premio).toLowerCase() : "",
+  reglaComo: LEALTAD?.qr ? "Al pagar, pedí el QR en la caja y escanealo con tu celular (o decí tu número de teléfono)."
+                        : "Al pagar, decí tu número de teléfono en la caja.",
   historiaClase: (NEGOCIO.historia.imagenes || []).length ? "" : " sin-fotos",
   historiaParrafosHtml: (NEGOCIO.historia.parrafos || []).map(p => `<p>${esc(p)}</p>`).join("\n      "),
   statsHtml: (NEGOCIO.historia.stats || []).map(([v, e]) => v === "{anios}"
