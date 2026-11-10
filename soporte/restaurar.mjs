@@ -35,7 +35,7 @@ if (!["faltantes", "todo"].includes(MODO)) { console.log("Modo inválido. Usá f
 const respaldo = JSON.parse(readFileSync(archivo, "utf8"));
 if (!Array.isArray(respaldo.tarjetas)) { console.log("El archivo no parece un respaldo de tarjetas."); process.exit(1); }
 
-const CAMPOS_FECHA = ["creada", "actualizada", "aceptoFecha", "fecha"];
+const CAMPOS_FECHA = ["creada", "actualizada", "aceptoFecha", "fecha", "ultimoQR"];
 const aFirestore = obj => Object.fromEntries(Object.entries(obj)
   .filter(([k]) => k !== "id" && k !== "movimientos")
   .map(([k, v]) => [k, CAMPOS_FECHA.includes(k) && typeof v === "string" ? Timestamp.fromDate(new Date(v)) : v]));

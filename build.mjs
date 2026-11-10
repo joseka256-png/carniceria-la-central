@@ -30,6 +30,8 @@ if (CONFIG.whatsapp && !/^506\d{8}$/.test(CONFIG.whatsapp)) errores.push('CONFIG
 if (!CONFIG.telefonos?.length) errores.push("CONFIG.telefonos: poné al menos un teléfono.");
 const sinFirebase = String(FIREBASE.config.projectId).startsWith("PEGAR");
 if (sinFirebase) (CI ? errores : avisos).push("FIREBASE.config todavía dice PEGAR… (pegá el firebaseConfig del proyecto).");
+if (LEALTAD && !(LEALTAD.meta >= 1 && LEALTAD.meta <= 30)) errores.push("LEALTAD.meta debe ser entre 1 y 30.");
+for (const k of ["qrMinutos", "esperaMinutos"]) if (LEALTAD?.[k] !== undefined && !(Number.isInteger(LEALTAD[k]) && LEALTAD[k] >= 0)) errores.push(`LEALTAD.${k} debe ser un número entero.`);
 const pendientes = JSON.stringify(N).match(/Por confirmar|PENDIENTE/g);
 if (pendientes) avisos.push(`Hay ${pendientes.length} dato(s) "Por confirmar" en negocio.js.`);
 
@@ -38,13 +40,14 @@ const anios = NEGOCIO.fundado ? new Date().getFullYear() - NEGOCIO.fundado : "";
 const vars = {
   ...NEGOCIO,
   config: CONFIG,
-  lealtad: LEALTAD,
+  lealtad: { qr: false, qrMinutos: 3, esperaMinutos: 120, ...LEALTAD },
   telefono1: CONFIG.telefonos[0],
   telefonosTexto: CONFIG.telefonos.join(" · "),
   badgesHtml: (NEGOCIO.hero.badges || []).map(([ico, txt], i) =>
     `<div class="badge b${i + 1}"><span>${esc(ico)}</span> ${esc(txt)}</div>`).join("\n      "),
   historiaImgsHtml: (NEGOCIO.historia.imagenes || []).map(([src, alt]) =>
     `<img src="${esc(src)}" alt="${esc(alt)}">`).join("\n      "),
+  historiaClase: (NEGOCIO.historia.imagenes || []).length ? "" : " sin-fotos",
   historiaParrafosHtml: (NEGOCIO.historia.parrafos || []).map(p => `<p>${esc(p)}</p>`).join("\n      "),
   statsHtml: (NEGOCIO.historia.stats || []).map(([v, e]) => v === "{anios}"
     ? `<div><b class="anios">${anios}</b><small>${esc(e)}</small></div>`

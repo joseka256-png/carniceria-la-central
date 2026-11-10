@@ -76,6 +76,17 @@
   .volver{display:block;text-align:center;margin-top:18px;color:var(--gris);font-weight:600;font-size:.9rem;text-decoration:none}
   .volver:hover{color:var(--naranja)}
   .hidden{display:none!important}
+  .hist .t-qr{color:var(--verde);font-weight:600}
+  .qr-box{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;margin-top:14px}
+  .qr-img{background:#fff;border:1.5px solid var(--borde);border-radius:16px;padding:10px;width:250px;height:250px;display:grid;place-items:center}
+  .qr-img svg,.qr-img img{width:100%;height:100%}
+  .qr-img.off{opacity:.25}
+  .qr-estado{font-size:1.05rem;font-weight:700}
+  .qr-estado.ok{color:var(--verde)}.qr-estado.err{color:var(--rojo)}
+  .qr-reloj{font-family:monospace;font-size:1.6rem;font-weight:800;color:var(--naranja);margin:6px 0}
+  .sep{display:flex;align-items:center;gap:10px;color:var(--gris);font-size:.8rem;font-weight:600;margin:4px 0 14px;text-transform:uppercase;letter-spacing:.05em}
+  .sep::before,.sep::after{content:"";flex:1;height:1px;background:var(--borde)}
+  @media(max-width:600px){.qr-box{grid-template-columns:1fr;justify-items:center;text-align:center}}
   @media(max-width:760px){.cliente{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr 1fr}.stat b{font-size:1.25rem}}
 </style>
 </head>
@@ -116,6 +127,25 @@
 
     <!-- CAJA -->
     <div id="pCaja">
+      <div class="card" id="qrCard">
+        <h2 style="margin-bottom:4px">📱 Sello por QR</h2>
+        <p style="color:var(--gris);font-size:.88rem;margin-bottom:12px">Escribí el monto de la compra y mostrale el QR al cliente para que lo escanee con su celular. Sirve <b>una sola vez</b> y vence en <span class="qrMin"></span> min.</p>
+        <div class="row">
+          <div><label for="qMonto">Monto de la compra (₡)</label><input id="qMonto" type="number" inputmode="numeric" placeholder="Ej: 12500" min="0"></div>
+          <button class="btn" id="btnQR">Generar QR</button>
+        </div>
+        <div class="msg" id="qMsg"></div>
+        <div class="qr-box hidden" id="qrBox">
+          <div class="qr-img" id="qrImg"></div>
+          <div>
+            <div class="qr-estado" id="qrEstado">Esperando que el cliente escanee…</div>
+            <div class="qr-reloj" id="qrReloj"></div>
+            <div style="color:var(--gris);font-size:.88rem" id="qrDetalle"></div>
+            <button class="btn ghost" id="btnQRCerrar" style="margin-top:12px">Listo / nuevo cliente</button>
+          </div>
+        </div>
+      </div>
+      <div class="sep" id="qrSep">o buscar al cliente por teléfono</div>
       <div class="card">
         <div class="row">
           <div><label for="bTel">Teléfono del cliente</label><input id="bTel" inputmode="numeric" placeholder="8888-8888" autocomplete="off"></div>
@@ -212,6 +242,7 @@ import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, g
 import { initializeAppCheck, ReCaptchaEnterpriseProvider }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
 import { firebaseConfig, LEALTAD, APP_CHECK_SITE_KEY } from "./firebase-config.js";
+import qrcode from "./vendor/qrcode.mjs";
 
 const $ = id => document.getElementById(id);
 const fmt = n => "₡" + Number(n).toLocaleString("es-CR");
@@ -331,6 +362,7 @@ function abrirCliente(tel) {
     $("cliHist").innerHTML = qs.empty ? '<small style="color:var(--gris)">Sin movimientos.</small>' :
       qs.docs.map(d => { const m = d.data();
         const txt = m.tipo === "sello" ? `+${m.sellosAgregados} sello${m.sellosAgregados > 1 ? "s" : ""} · ${fmt(m.monto)}`
+                  : m.tipo === "qr" ? `+${m.sellosAgregados} por QR 📱 · ${fmt(m.monto)}`
                   : m.tipo === "canje" ? "Premio canjeado" : `Sin sello · ${fmt(m.monto)}`;
         return `<div><span class="t-${m.tipo}">${txt}</span><span style="color:var(--gris)">${fFecha(m.fecha)} · ${esc((m.staffNombre || "").split(" ")[0])}</span></div>`;
       }).join("");
@@ -385,6 +417,61 @@ $("btnSello").onclick = async () => {
     msg($("cliMsg"), e.message === "llena" ? "La tarjeta está completa: primero canjeá el premio." : "No se pudo registrar. Revisá la conexión e intentá de nuevo.");
   }
   $("btnSello").disabled = false;
+};
+
+// ---------- sello por QR (un solo uso) ----------
+document.querySelectorAll(".qrMin").forEach(e => e.textContent = LEALTAD.qrMinutos);
+if (!LEALTAD.qr) { $("qrCard").classList.add("hidden"); $("qrSep").classList.add("hidden"); }
+let qrStop = null, qrTimer = null;
+const codigoAleatorio = () => {
+  const b = crypto.getRandomValues(new Uint8Array(18));
+  return btoa(String.fromCharCode(...b)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+};
+function cerrarQR() {
+  if (qrStop) qrStop(); qrStop = null; clearInterval(qrTimer);
+  $("qrBox").classList.add("hidden"); $("qrImg").innerHTML = ""; $("qMonto").value = ""; msg($("qMsg"), "", "ok");
+  $("qMonto").focus();
+}
+$("btnQRCerrar").onclick = cerrarQR;
+$("qMonto").addEventListener("keydown", e => { if (e.key === "Enter") $("btnQR").click(); });
+$("btnQR").onclick = async () => {
+  const monto = Math.round(Number($("qMonto").value));
+  if (!monto || monto <= 0) return msg($("qMsg"), "Escribí el monto de la compra.");
+  if (monto > 500000) return msg($("qMsg"), "Revisá el monto: parece demasiado alto.");
+  if (monto < LEALTAD.montoMinimo) return msg($("qMsg"), `Esta compra no suma sello: es menor a ${fmt(LEALTAD.montoMinimo)}.`);
+  const sellos = Math.min(LEALTAD.modo === "porCada" ? Math.floor(monto / LEALTAD.montoMinimo) : 1, LEALTAD.meta);
+  if (qrStop) qrStop(); clearInterval(qrTimer);
+  $("btnQR").disabled = true; msg($("qMsg"), "Generando…", "ok");
+  const id = codigoAleatorio();
+  try {
+    await setDoc(doc(db, "codigos", id), { sellos, monto, staffUid: staff.uid, staffNombre: staff.nombre, creado: serverTimestamp(), usado: false });
+  } catch (e) { $("btnQR").disabled = false; return msg($("qMsg"), "No se pudo generar el QR. Revisá la conexión."); }
+  $("btnQR").disabled = false; msg($("qMsg"), "", "ok");
+  const url = new URL(`./?c=${id}#tarjeta`, location.href).href;
+  const q = qrcode(0, "M"); q.addData(url); q.make();
+  $("qrImg").innerHTML = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+  $("qrImg").classList.remove("off");
+  $("qrBox").classList.remove("hidden");
+  $("qrEstado").className = "qr-estado"; $("qrEstado").textContent = "Esperando que el cliente escanee…";
+  $("qrDetalle").textContent = `${fmt(monto)} → ${sellos} sello${sellos > 1 ? "s" : ""}`;
+  const vence = Date.now() + LEALTAD.qrMinutos * 60000;
+  const reloj = () => {
+    const s = Math.max(0, Math.round((vence - Date.now()) / 1000));
+    $("qrReloj").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    if (!s) { clearInterval(qrTimer); if (qrStop) qrStop(); qrStop = null; $("qrImg").classList.add("off");
+      $("qrEstado").className = "qr-estado err"; $("qrEstado").textContent = "QR vencido. Generá otro si hace falta."; }
+  };
+  reloj(); qrTimer = setInterval(reloj, 1000);
+  qrStop = onSnapshot(doc(db, "codigos", id), async snap => {
+    const c = snap.data(); if (!c || !c.usado) return;
+    clearInterval(qrTimer); qrStop(); qrStop = null;
+    $("qrImg").classList.add("off"); $("qrReloj").textContent = "";
+    let quien = telBonito(c.usadoPor);
+    try { const t = await getDoc(doc(db, "tarjetas", c.usadoPor)); if (t.exists()) quien = `${t.data().nombre} · ${quien} (${t.data().sellos}/${LEALTAD.meta})`; } catch (e) {}
+    $("qrEstado").className = "qr-estado ok"; $("qrEstado").textContent = "✓ Sello sumado";
+    $("qrDetalle").textContent = quien;
+    toast("✓ Sello por QR: " + quien);
+  });
 };
 
 // ---------- canjear premio ----------

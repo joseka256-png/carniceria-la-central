@@ -6,6 +6,12 @@
     "build": "node build.mjs",
     "preview": "node build.mjs && npx --yes serve dist",
     "deploy": "node build.mjs && npx --yes firebase-tools deploy --only hosting",
-    "reglas": "node build.mjs && npx --yes firebase-tools deploy --only firestore:rules"
+    "reglas": "node build.mjs && npx --yes firebase-tools deploy --only firestore:rules",
+    "test:reglas": "node build.mjs && firebase emulators:exec --only firestore --project demo-reglas \"node --test pruebas/\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "firebase": "^13.0.0",
+    "firebase-tools": "^15.0.0"
   }
 }

@@ -149,7 +149,12 @@ export const LEALTAD = {
   meta: 10,                  // sellos para ganar el premio
   montoMinimo: 3000,         // compra mínima (₡) para sumar sello
   modo: "porCompra",         // "porCompra": 1 sello por compra ≥ mínimo · "porCada": 1 sello por cada ₡montoMinimo
-  premio: "Lápiz corriente gratis"
+  premio: "Lápiz corriente gratis",
+
+  // Sello por QR: en cada compra la caja genera un QR de UN SOLO USO y el cliente lo escanea.
+  qr: true,
+  qrMinutos: 3,              // el QR vence a los X minutos
+  esperaMinutos: 120         // espera mínima entre sellos por QR en la misma tarjeta
 };
 
 // =========================================================
