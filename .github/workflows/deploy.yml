@@ -4,10 +4,10 @@
 # Requiere el secreto FIREBASE_SERVICE_ACCOUNT (ver README → "Deploy automático").
 name: Deploy a Firebase Hosting
 
+# DESACTIVADO por ahora (el sitio está en GitHub Pages). Para activarlo,
+# volver a poner:  push: branches: [main]  y  pull_request:
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
