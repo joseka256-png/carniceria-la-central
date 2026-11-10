@@ -122,12 +122,12 @@ export const LEALTAD = {
 // =========================================================
 export const FIREBASE = {
   config: {
-    apiKey: "PEGAR_API_KEY",
-    authDomain: "PEGAR.firebaseapp.com",
-    projectId: "PEGAR",
-    storageBucket: "PEGAR.firebasestorage.app",
-    messagingSenderId: "PEGAR",
-    appId: "PEGAR"
+    apiKey: "AIzaSyB2qx_bsi2C6pLWM7DK2oEILDKUlyYYJGk",
+    authDomain: "carniceria-la-central.firebaseapp.com",
+    projectId: "carniceria-la-central",
+    storageBucket: "carniceria-la-central.firebasestorage.app",
+    messagingSenderId: "1084368341825",
+    appId: "1:1084368341825:web:9f69736816007dc51d2fc0"
   },
   // Sitio de Hosting. Vacío = el sitio por defecto del proyecto (projectId.web.app).
   hostingSite: "",
