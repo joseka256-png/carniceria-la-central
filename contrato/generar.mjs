@@ -113,7 +113,7 @@ const playfair = fuente(join(RAIZ, "assets", "fonts", "PlayfairDisplay.ttf"));
 
 const html = `<!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8">
-<title>Contrato anual · ${esc(NEGOCIO.nombre)} · ${esc(P.marca)}</title>
+<title>Contrato de Cotizador web premium · ${esc(NEGOCIO.nombre)} · ${esc(P.marca)}</title>
 <style>
   @font-face{font-family:'Playfair';src:url('${playfair}') format('truetype');font-weight:400 900}
   @page{size:letter;margin:16mm 16mm 18mm}
@@ -197,7 +197,7 @@ const html = `<!DOCTYPE html>
     <img class="iscr" src="${logoIscrBlanco}" alt="${esc(P.marca)}">
   </div>
   <span class="tag">Plan anual · Sitio web + soporte</span>
-  <h1>Contrato de servicio<br>de sitio web</h1>
+  <h1>Contrato de Cotizador<br>web premium</h1>
   <p>Alquiler del sitio de <b>${esc(NEGOCIO.nombre)}</b> con dominio, hosting, mantenimiento y soporte mensual durante 12 meses.</p>
 </section>
 

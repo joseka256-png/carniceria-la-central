@@ -15,7 +15,7 @@
 export const PROVEEDOR = {
   marca: "ISCR Tech",
   marcaLarga: "Inventions Software Costa Rica",
-  nombre: "",            // nombre completo de quien firma por ISCR
+  nombre: "Ing. José Grey Redondo Ramírez",   // quien firma por ISCR
   cedula: "",
   telefono: "8690-1930",
   correo: "",
