@@ -104,6 +104,31 @@
   .buscar input::placeholder{color:#9aa29e}
   .sin-res{grid-column:1/-1;text-align:center;color:#b9c0bc;padding:30px 0}
 
+  /* SLIDER DE PROMOCIONES */
+  .promos{position:relative;padding:0;overflow:hidden;background:var(--pizarra);aspect-ratio:1920/700;max-height:70vh;width:100%}
+  .promos-pista{display:flex;height:100%;transition:transform .6s ease}
+  .promo{position:relative;flex:0 0 100%;height:100%;overflow:hidden}
+  .promo picture,.promo img{width:100%;height:100%}
+  .promo img{object-fit:cover}
+  .promo.afiche .fondo{position:absolute;inset:-20px;background:center/cover;filter:blur(18px) brightness(.6)}
+  .promo.afiche img{position:relative;object-fit:contain}
+  .promo .capa{position:absolute;inset:0;display:flex;align-items:center;background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,.25) 60%,transparent)}
+  .promo .capa .wrap{color:#fff;margin:0 auto}
+  .promo h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.5rem,4vw,3rem);line-height:1.1;max-width:620px}
+  .promo p{max-width:520px;margin:10px 0 18px;opacity:.95;font-size:clamp(.9rem,1.6vw,1.1rem)}
+  .promo .btn{background:var(--naranja)}.promo .btn:hover{background:var(--naranja-osc)}
+  .promos-flecha{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.85);color:var(--negro);font-size:1.6rem;line-height:1;cursor:pointer;z-index:2;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+  .promos-flecha.ant{left:14px}.promos-flecha.sig{right:14px}
+  .promos-puntos{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:2}
+  .promos-puntos button{width:10px;height:10px;border-radius:50px;border:none;background:rgba(255,255,255,.55);cursor:pointer;padding:0;transition:.3s}
+  .promos-puntos button.on{width:28px;background:#fff}
+  .promos.uno .promos-flecha,.promos.uno .promos-puntos{display:none}
+  @media(max-width:700px){
+    .promos{aspect-ratio:1/1;max-height:none}
+    .promo .capa{align-items:flex-end;background:linear-gradient(0deg,rgba(0,0,0,.8),rgba(0,0,0,.2) 65%,transparent);padding-bottom:40px}
+    .promos-flecha{display:none}
+  }
+
   /* GRANJA */
   #granja{background:#fff}
   .granja-top{display:grid;grid-template-columns:1fr 1.1fr;gap:50px;align-items:center}
@@ -314,6 +339,14 @@
     <button class="menu-toggle" aria-label="Abrir menú" onclick="document.getElementById('links').classList.toggle('open')">☰</button>
   </nav>
 </header>
+
+<!-- SLIDER DE PROMOCIONES (datos en PROMOS de negocio.js) -->
+<section class="promos" id="promos" aria-roledescription="carrusel" aria-label="Promociones" hidden>
+  <div class="promos-pista" id="promosPista"></div>
+  <button class="promos-flecha ant" id="promosAnt" aria-label="Promoción anterior">‹</button>
+  <button class="promos-flecha sig" id="promosSig" aria-label="Promoción siguiente">›</button>
+  <div class="promos-puntos" id="promosPuntos"></div>
+</section>
 
 <!-- HERO -->
 <section class="hero" id="inicio">
@@ -752,6 +785,51 @@ $c("btnEnviar").onclick = e => {
 try { const nGuardado = localStorage.getItem(NEGOCIO.id + "_nombre"); if (nGuardado) $c("pNombre").value = nGuardado; } catch (e) {}
 document.addEventListener("keydown", e => { if (e.key === "Escape") cerrarCar(); });
 pintarCarrito();
+
+/* ====================== SLIDER DE PROMOCIONES ====================== */
+{
+  const hoy = new Date().toISOString().slice(0,10);
+  const promos = (N.PROMOS || []).filter(p => p && p.imagen && (!p.desde || p.desde <= hoy) && (!p.hasta || p.hasta >= hoy));
+  const caja = document.getElementById("promos");
+  if (caja && promos.length) {
+    caja.hidden = false;
+    if (promos.length === 1) caja.classList.add("uno");
+    if (!promos.some(p => p.imagenMovil)) caja.classList.add("sin-movil");
+    const pista = document.getElementById("promosPista"), puntos = document.getElementById("promosPuntos");
+    pista.innerHTML = promos.map((p, i) => `
+      <div class="promo ${p.afiche ? "afiche" : ""}" role="group" aria-roledescription="diapositiva" aria-label="${i+1} de ${promos.length}">
+        ${p.afiche ? `<div class="fondo" style="background-image:url('${esc(p.imagenMovil || p.imagen)}')"></div>` : ""}
+        <picture>
+          ${p.imagenMovil ? `<source media="(max-width:700px)" srcset="${esc(p.imagenMovil)}">` : ""}
+          <img src="${esc(p.imagen)}" alt="${esc(p.alt || p.titulo || "Promoción")}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}>
+        </picture>
+        ${!p.afiche && (p.titulo || p.texto || p.boton) ? `<div class="capa"><div class="wrap">
+          ${p.titulo ? `<h2>${esc(p.titulo)}</h2>` : ""}
+          ${p.texto ? `<p>${esc(p.texto)}</p>` : ""}
+          ${p.boton ? `<a class="btn" href="${esc(p.boton[1])}">${esc(p.boton[0])} →</a>` : ""}
+        </div></div>` : (p.afiche && p.boton ? `<a href="${esc(p.boton[1])}" style="position:absolute;inset:0" aria-label="${esc(p.boton[0])}"></a>` : "")}
+      </div>`).join("");
+    puntos.innerHTML = promos.map((_, i) => `<button aria-label="Ver promoción ${i+1}"></button>`).join("");
+    let actual = 0, timer = null;
+    const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ir = k => {
+      actual = (k + promos.length) % promos.length;
+      pista.style.transform = `translateX(-${actual * 100}%)`;
+      puntos.querySelectorAll("button").forEach((b, i) => b.classList.toggle("on", i === actual));
+    };
+    const auto = () => { clearInterval(timer); if (!quieto && promos.length > 1) timer = setInterval(() => ir(actual + 1), 6000); };
+    document.getElementById("promosAnt").onclick = () => { ir(actual - 1); auto(); };
+    document.getElementById("promosSig").onclick = () => { ir(actual + 1); auto(); };
+    puntos.querySelectorAll("button").forEach((b, i) => b.onclick = () => { ir(i); auto(); });
+    caja.addEventListener("mouseenter", () => clearInterval(timer));
+    caja.addEventListener("mouseleave", auto);
+    let x0 = null;
+    caja.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; clearInterval(timer); }, {passive:true});
+    caja.addEventListener("touchend", e => { if (x0 !== null) { const d = e.changedTouches[0].clientX - x0; if (Math.abs(d) > 40) ir(actual + (d < 0 ? 1 : -1)); } x0 = null; auto(); });
+    document.addEventListener("visibilitychange", () => document.hidden ? clearInterval(timer) : auto());
+    ir(0); auto();
+  }
+}
 
 /* ====================== GRANJA ====================== */
 const G = N.GRANJA, $g = id => document.getElementById(id);

@@ -63,6 +63,34 @@ export const NEGOCIO = {
   cta: { titulo: "¿Ya sabe qué va a llevar? 🥩", texto: "Arme su pedido y páselo a recoger a la hora que elija." }
 };
 
+// =========================================================
+//  SLIDER DE PROMOCIONES (debajo del header)
+//  Vacío [] = no se muestra. Las fotos van en assets/img/promos/.
+//  Tamaños recomendados:  imagen 1920×700 (compu)  ·  imagenMovil 1080×1080 (celular, opcional)
+//  Campos:
+//    imagen, imagenMovil   → fotos (la de celular es opcional)
+//    alt                   → descripción de la imagen (obligatoria)
+//    titulo, texto         → texto encima de la foto (opcional)
+//    boton: ["Texto", "enlace"] → ej. ["Ver cortes", "?cat=Cerdo#menu"], "granja.html", "#tarjeta"
+//    afiche: true          → para artes ya diseñados (Canva, etc.): se ve completo, sin texto encima
+//    desde / hasta: "2026-12-01" → se muestra solo en esas fechas (opcional)
+// =========================================================
+export const PROMOS = [
+  // EJEMPLOS — cambiar por las promociones reales del cliente
+  { imagen: "img/granja/engorde.jpg", alt: "Cerdos de nuestra granja",
+    titulo: "Para sus fiestas, cerdo de nuestra granja 🎄",
+    texto: "Lomo, posta, costilla y chuleta frescos. Haga su pedido con tiempo y páselo a recoger.",
+    boton: ["Ver cortes de cerdo", "?cat=Cerdo#menu"], hasta: "2026-12-31" },
+  { imagen: "img/granja/lechones.jpg", alt: "Lechones en la granja Cosecha Porcina",
+    titulo: "Conozca Cosecha Porcina",
+    texto: "Criamos los cerdos y el ganado que llegan a nuestro mostrador.",
+    boton: ["Conocé la granja", "granja.html"] },
+  { imagen: "img/granja/terneros.jpg", alt: "Terneros de nuestra finca",
+    titulo: "Tarjeta de cliente frecuente ⭐",
+    texto: "Cada compra de ₡10.000 o más le suma un sello.",
+    boton: ["Sacar mi tarjeta", "#tarjeta"] }
+];
+
 export const MODULOS = {
   tarjeta: true,
   granja: true          // resumen en el inicio + página granja.html (datos en GRANJA, abajo)
