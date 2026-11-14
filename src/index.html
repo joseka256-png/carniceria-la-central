@@ -104,6 +104,34 @@
   .buscar input::placeholder{color:#9aa29e}
   .sin-res{grid-column:1/-1;text-align:center;color:#b9c0bc;padding:30px 0}
 
+  /* GRANJA */
+  #granja{background:#fff}
+  .granja-top{display:grid;grid-template-columns:1fr 1.1fr;gap:50px;align-items:center}
+  .granja-txt .tag{display:inline-block;margin-bottom:14px}
+  .granja-txt p{color:var(--gris);margin-bottom:14px}
+  .granja-lema{font-family:'Parisienne',cursive;font-size:1.9rem;color:var(--naranja)!important;line-height:1.2}
+  .granja-fotos{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .granja-fotos img{width:100%;height:100%;aspect-ratio:4/3;object-fit:cover;border-radius:20px}
+  .granja-fotos img:nth-child(2){margin-top:34px}.granja-fotos img:nth-child(3){margin-top:-34px}
+  .pilares{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:56px 0}
+  .pilar{background:var(--crema);border:1px solid var(--borde);border-radius:20px;padding:24px}
+  .pilar .ic{font-size:1.9rem;margin-bottom:8px}
+  .pilar h3{font-size:1.05rem;margin-bottom:6px}
+  .pilar p{color:var(--gris);font-size:.9rem}
+  .granja-amb{background:var(--pizarra);color:#fff;border-radius:26px;padding:36px}
+  .granja-amb h3{font-size:1.3rem;margin-bottom:20px}
+  .linea{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;counter-reset:x}
+  .linea li{border-top:3px solid var(--naranja);padding-top:12px;font-size:.88rem;color:#d0d5d2}
+  .linea b{display:block;font-size:1.15rem;color:#fff;margin-bottom:4px}
+  .granja-cumple{margin-top:22px;font-size:.85rem;color:#b9c0bc;border-top:1px dashed #4a5258;padding-top:16px}
+  @media(max-width:900px){
+    .granja-top{grid-template-columns:1fr;gap:30px}
+    .pilares{grid-template-columns:1fr 1fr}
+    .linea{grid-template-columns:1fr}
+    .granja-amb{padding:26px}
+  }
+  @media(max-width:520px){.pilares{grid-template-columns:1fr}}
+
   /* NOSOTROS */
   .about{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
   .about.sin-fotos{grid-template-columns:1fr;max-width:820px}.about.sin-fotos .about-img{display:none}
@@ -278,7 +306,8 @@
       <li><a href="#inicio">Inicio</a></li>
       <li><a href="#menu">Menú</a></li>
 <!--@tarjeta-->      <li><a href="#tarjeta">Tarjeta cliente</a></li>
-<!--/@tarjeta-->      <li><a href="#nosotros">Nosotros</a></li>
+<!--/@tarjeta--><!--@granja-->      <li><a href="#granja">Nuestra granja</a></li>
+<!--/@granja-->      <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#visitanos">Visítanos</a></li>
     </ul>
     <a class="btn" href="#menu" data-armar>🛒 Armar pedido</a>
@@ -320,6 +349,33 @@
     <p class="nota" id="menuNota">🛒 Agregá productos, tocá <b>Ver pedido</b> y elegí a qué hora pasás a retirarlo · Precios en colones, sujetos a cambio.</p>
   </div>
 </section>
+
+<!--@granja-->
+<!-- NUESTRA GRANJA (datos en GRANJA de negocio.js) -->
+<section id="granja">
+  <div class="wrap">
+    <div class="titulo">
+      <span class="script" id="gScript"></span>
+      <h2 id="gTitulo"></h2>
+    </div>
+    <div class="granja-top">
+      <div class="granja-txt">
+        <span class="tag" id="gNombre"></span>
+        <div id="gIntro"></div>
+        <p class="granja-lema" id="gLema"></p>
+        <a href="#menu" class="btn" id="gVerCerdo">🐖 Ver cortes de cerdo →</a>
+      </div>
+      <div class="granja-fotos" id="gFotos"></div>
+    </div>
+    <div class="pilares" id="gPilares"></div>
+    <div class="granja-amb">
+      <h3>🌱 Comprometidos con el ambiente</h3>
+      <ol class="linea" id="gLinea"></ol>
+      <p class="granja-cumple" id="gCumple"></p>
+    </div>
+  </div>
+</section>
+<!--/@granja-->
 
 <!--@tarjeta-->
 <!-- TARJETA VIRTUAL DE CLIENTE (Firebase) -->
@@ -484,7 +540,8 @@
 
 
 <script type="module">
-import { NEGOCIO, CONFIG, MENU } from "./negocio.js";
+import * as N from "./negocio.js";
+const { NEGOCIO, CONFIG, MENU } = N;
 
 /* ====================== lógica ====================== */
 const tieneWA = !!CONFIG.whatsapp;
@@ -501,6 +558,7 @@ const colones = n => "₡" + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))
 /* --- unidades: "kg" se pide por peso; "paquete"/"unid" por cantidad --- */
 const UNI = { kg: "kg", paquete: "paq.", unid: "unid." };
 const redondear = n => Math.round(n * 1000) / 1000;
+const fmtPeso = c => ({0.25:"¼ kg", 0.5:"½ kg", 0.75:"¾ kg"})[c] || fmtCant(c, "kg");
 const fmtCant = (c, u) => u === "kg" ? (c < 1 ? Math.round(c * 1000) + " g" : String(redondear(c)).replace(".", ",") + " kg") : String(c);
 const precioTxt = p => typeof p.precio === "number" ? colones(p.precio) : p.precio;
 // Cada producto hereda unidad/paso/inicial de su sección si no los trae
@@ -508,7 +566,7 @@ const PRODUCTOS = {};
 for (const [cat, secs] of Object.entries(MENU)) for (const sec of secs) for (const p of sec.platos) {
   const unidad = p.unidad || sec.unidad || "";
   const kg = unidad === "kg";
-  Object.assign(p, { unidad, paso: p.paso || sec.paso || (kg ? 0.5 : 1), inicial: p.inicial || sec.inicial || 1, cat });
+  Object.assign(p, { unidad, paso: p.paso || sec.paso || (kg ? 0.5 : 1), opciones: kg ? (p.opciones || sec.opciones || [0.5, 1]) : [1], cat });
   PRODUCTOS[p.nombre] = p;
 }
 const MT = NEGOCIO.menu || {};
@@ -541,13 +599,15 @@ function pintarCategoria(cat, q = ""){
           <div class="top"><h4>${p.nombre}</h4><span class="dots"></span><span class="precio">${precioTxt(p)}${UNI[p.unidad] && typeof p.precio === "number" ? `<small> / ${UNI[p.unidad]}</small>` : ""}</span></div>
           ${p.desc?`<p>${p.desc}</p>`:''}
           <div class="meta">${p.extra?`<span class="extra">${p.extra}</span>`:''}${p.sinPedido?'':`<div class="add-btns">
-            <button class="add" data-add="${esc(p.nombre)}" data-precio="${num(p.precio)}">+ Agregar${p.unidad==="kg" ? " " + fmtCant(p.inicial,"kg") : ""}</button>
+            ${p.unidad==="kg"
+              ? p.opciones.map(c=>`<button class="add" data-add="${esc(p.nombre)}" data-precio="${num(p.precio)}" data-cant="${c}">+ ${fmtPeso(c)}</button>`).join("")
+              : `<button class="add" data-add="${esc(p.nombre)}" data-precio="${num(p.precio)}">+ Agregar</button>`}
             ${p.extra?`<button class="add" data-add="${esc(p.nombre+" "+etiquetaExtra(p.extra).toLowerCase())}" data-precio="${num(p.extra)}">+ ${esc(etiquetaExtra(p.extra))}</button>`:''}
           </div>`}</div>
         </div>`).join("")}
     </div>`).join("");
   document.querySelectorAll("#grid .add").forEach(b=>b.onclick=()=>{
-    agregar(b.dataset.add, +b.dataset.precio, PRODUCTOS[b.dataset.add]);
+    agregar(b.dataset.add, +b.dataset.precio, PRODUCTOS[b.dataset.add], +b.dataset.cant || 1);
     b.classList.add("ok"); const t=b.textContent; b.textContent="✓ Agregado";
     setTimeout(()=>{b.classList.remove("ok"); b.textContent=t;}, 900);
   });
@@ -593,11 +653,11 @@ const hayKg = () => carrito.some(i=>i.unidad==="kg");
 
 function avisar(m){ const t=$c("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(avisar.t); avisar.t=setTimeout(()=>t.classList.remove("show"),2200); }
 
-function agregar(nombre, precio, prod = {}){
-  const unidad = prod.unidad || "", paso = prod.paso || 1, inicial = unidad === "kg" ? (prod.inicial || 1) : 1;
+function agregar(nombre, precio, prod = {}, cant = 1){
+  const unidad = prod.unidad || "", paso = prod.paso || 1;
   const it = carrito.find(i=>i.nombre===nombre);
-  if (it) it.cant = redondear(it.cant + (it.unidad==="kg" ? it.paso : 1));
-  else carrito.push({nombre, precio, cant:inicial, unidad, paso});
+  if (it) it.cant = redondear(it.cant + cant);
+  else carrito.push({nombre, precio, cant, unidad, paso});
   guardarCar(); pintarCarrito();
   const c = carrito.find(i=>i.nombre===nombre);
   avisar(`✓ ${nombre} agregado` + (c.unidad==="kg" ? ` · ${fmtCant(c.cant,"kg")}` : ""));
@@ -693,6 +753,19 @@ $c("btnEnviar").onclick = e => {
 try { const nGuardado = localStorage.getItem(NEGOCIO.id + "_nombre"); if (nGuardado) $c("pNombre").value = nGuardado; } catch (e) {}
 document.addEventListener("keydown", e => { if (e.key === "Escape") cerrarCar(); });
 pintarCarrito();
+
+/* ====================== GRANJA ====================== */
+const G = N.GRANJA, $g = id => document.getElementById(id);
+if (G && $g("granja")) {
+  $g("gScript").textContent = G.script; $g("gTitulo").textContent = G.titulo; $g("gNombre").textContent = "🐖 " + G.nombre;
+  $g("gIntro").innerHTML = G.intro.map(t=>`<p>${esc(t)}</p>`).join("");
+  $g("gLema").textContent = G.lema || "";
+  $g("gFotos").innerHTML = G.fotos.map(([src,alt])=>`<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy">`).join("");
+  $g("gPilares").innerHTML = G.pilares.map(([ic,t,d])=>`<div class="pilar"><div class="ic">${ic}</div><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("");
+  $g("gLinea").innerHTML = G.linea.map(([a,t])=>`<li><b>${esc(a)}</b>${esc(t)}</li>`).join("");
+  $g("gCumple").textContent = G.cumplimiento || "";
+  $g("gVerCerdo").onclick = e => { e.preventDefault(); if (MENU["Cerdo"]) { catActual = "Cerdo"; $b.value = ""; pintarCategoria("Cerdo"); } document.getElementById("menu").scrollIntoView({behavior:"smooth"}); };
+}
 
 document.querySelectorAll("#links a").forEach(a=>a.onclick=()=>document.getElementById("links").classList.remove("open"));
 </script>

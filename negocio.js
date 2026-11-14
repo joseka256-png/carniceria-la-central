@@ -64,7 +64,8 @@ export const NEGOCIO = {
 };
 
 export const MODULOS = {
-  tarjeta: true
+  tarjeta: true,
+  granja: true          // sección "Nuestra granja" (datos en GRANJA, abajo)
 };
 
 export const CONFIG = {
@@ -89,10 +90,10 @@ export const CONFIG = {
    unidad: "kg" (se pide por peso) · "paquete" · "unid". Se puede poner
            por sección (vale para todos sus productos) o por producto.
    paso:   cuánto sube/baja el peso en el carrito (kg). Por defecto 0.5.
-   inicial: peso con que entra al carrito. Por defecto 1 kg.
+   opciones: botones de peso para agregar (kg). Por defecto [0.5, 1] → "+ ½ kg" y "+ 1 kg".
    ========================================================= */
 const KG = { unidad: "kg" };
-const FIAMBRE = { unidad: "kg", paso: 0.25, inicial: 0.5 };   // embutidos por peso: de ¼ kg
+const FIAMBRE = { unidad: "kg", paso: 0.25, opciones: [0.25, 0.5] };   // embutidos por peso: de ¼ kg
 
 export const MENU = {
   "Res": [
@@ -124,7 +125,7 @@ export const MENU = {
     ]}
   ],
   "Cerdo": [
-    { titulo: "Cerdo", ico: "🐖", sub: "Precios por kilo", ...KG, platos: [
+    { titulo: "Cerdo", ico: "🐖", sub: "De nuestra propia Granja Porcina San Rafael · precios por kilo", ...KG, platos: [
       { nombre: "Lomo de cerdo", precio: 5800 },
       { nombre: "Lomito de cerdo", precio: 5200 },
       { nombre: "Posta de cerdo", precio: 4000 },
@@ -246,6 +247,41 @@ export const MENU = {
       { nombre: "Carbón", precio: 1400, unidad: "paquete" },
       { nombre: "Salsa de chile chipotle", precio: 2000, unidad: "unid" }
     ]}
+  ]
+};
+
+// =========================================================
+//  NUESTRA GRANJA — Granja Porcina San Rafael (producción propia).
+//  Datos tomados de la presentación de la granja (2025).
+// =========================================================
+export const GRANJA = {
+  script: "De nuestra granja",
+  titulo: "a su mesa.",
+  nombre: "Granja Porcina San Rafael",
+  intro: [
+    "El cerdo que vendemos en La Central lo criamos nosotros mismos en la Granja Porcina San Rafael, en Santa Cruz de Turrialba. Así sabemos de dónde viene cada corte y cómo se cuidó desde el primer día.",
+    "Creemos que producir con responsabilidad es producir de forma sostenible: cuidamos el bienestar de los animales, a nuestros colaboradores, a la comunidad y el entorno."
+  ],
+  lema: "Alimentando vidas en todos los sentidos",
+  fotos: [
+    ["img/granja/corrales.jpg", "Corrales de la Granja Porcina San Rafael con el personal atendiendo a los cerdos"],
+    ["img/granja/lechones.jpg", "Lechones recién nacidos en la granja"],
+    ["img/granja/equipo.jpg", "Equipo de trabajo de la granja"],
+    ["img/granja/vista-aerea.jpg", "Vista aérea de la granja y su sistema de tratamiento de aguas"]
+  ],
+  pilares: [
+    ["🐖", "Producción propia", "Criamos los cerdos que llegan a nuestro mostrador: carne fresca, sin intermediarios."],
+    ["❤️", "Bienestar animal", "Cada decisión en la granja se toma pensando primero en el bienestar de nuestros animales."],
+    ["🌱", "Gestión ambiental", "Tratamos las aguas de la granja con biodigestores y las reutilizamos como abono para pastos, con asesoría técnica."],
+    ["🤝", "Nuestra gente", "A lo largo de nuestra historia hemos dado empleo a más de 40 colaboradores de la zona."]
+  ],
+  cumplimiento: "Cumplimos los reglamentos 33601-MINAE (vertido y reúso de aguas residuales) y 42367-MAG (aprovechamiento de efluentes como abono), con regente ambiental y asesoría de AM-Biogas.",
+  linea: [
+    ["2016", "Dos biodigestores de 120 m³ (240.000 litros), cuando la mayoría de las granjas solo tenía lagunas abiertas."],
+    ["2018", "Con la asesoría de AM-Biogas se aprueba y amplía el sistema de tratamiento de aguas residuales."],
+    ["2019", "Plan agronómico: las aguas tratadas se usan como abono natural para pastos, con análisis de suelos."],
+    ["2020", "Regente ambiental (consultor SETENA) da seguimiento continuo a la gestión de la granja."],
+    ["2024–25", "Renovación completa del sistema de tratamiento."]
   ]
 };
 
