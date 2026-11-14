@@ -84,6 +84,7 @@ for (const f of readdirSync(SRC)) {
   if (statSync(join(SRC, f)).isDirectory()) continue;
   if (f === "firestore.rules") continue;
   if (!MODULOS.tarjeta && SOLO_TARJETA.includes(f)) continue;
+  if (!MODULOS.granja && f === "granja.html") continue;
   const ruta = join(SRC, f);
   if ([".html", ".js", ".css"].includes(extname(f))) writeFileSync(join(DIST, f), render(readFileSync(ruta, "utf8"), f));
   else cpSync(ruta, join(DIST, f));

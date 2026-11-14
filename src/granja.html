@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestra granja | {{nombre}}</title>
+<meta name="description" content="Conozca la granja donde {{nombre}} cría sus cerdos y su ganado: bienestar animal, producción propia y biogás a partir de los desechos.">
+<link rel="icon" href="favicon.png">
+<meta property="og:title" content="Nuestra granja · {{nombre}}">
+<meta property="og:description" content="De nuestra granja a su mesa: cerdos y ganado criados por nosotros.">
+<meta property="og:image" content="img/granja/engorde.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primario:{{colores.primario}}; --primario-osc:{{colores.primarioOsc}}; --naranja:{{colores.acento}}; --naranja-osc:{{colores.acentoOsc}};
+    --negro:#2B2F33; --pizarra:#23272B; --gris:#5d625f;
+    --crema:#F7F5EF; --borde:#E4DFD3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Poppins',sans-serif;color:var(--negro);background:var(--crema);line-height:1.6}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1150px,92%);margin:auto}
+  @font-face{font-family:'Parisienne';src:url('fonts/Parisienne-Regular.ttf') format('truetype');font-display:swap}
+  @font-face{font-family:'Playfair Display';src:url('fonts/PlayfairDisplay.ttf') format('truetype');font-weight:400 900;font-display:swap}
+  .script{font-family:'Parisienne',cursive;font-weight:400}
+  h1,h2{font-family:'Playfair Display',Georgia,serif;font-weight:800;letter-spacing:-.01em;line-height:1.1}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(247,245,239,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--borde)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:84px;gap:16px}
+  .nav img{height:58px;width:auto}
+  .nav ul{display:flex;gap:26px;list-style:none;font-weight:500}
+  .nav ul a:hover,.nav ul a.act{color:var(--primario)}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--primario);color:#fff;padding:12px 24px;border-radius:50px;font-weight:600;transition:.25s;border:none;cursor:pointer;font-family:inherit;font-size:1rem}
+  .btn:hover{background:var(--primario-osc);transform:translateY(-2px)}
+  .btn.nar{background:var(--naranja)}.btn.nar:hover{background:var(--naranja-osc)}
+  .btn.blanco{background:#fff;color:var(--primario)}
+  .menu-toggle{display:none;background:none;border:none;font-size:1.9rem;cursor:pointer;line-height:1}
+
+  .hero{position:relative;min-height:72vh;display:flex;align-items:flex-end;color:#fff;background:#222 center/cover no-repeat}
+  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 20%,rgba(0,0,0,.75))}
+  .hero .wrap{position:relative;padding:80px 0 60px}
+  .hero .tag{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);padding:6px 16px;border-radius:50px;font-size:.85rem;font-weight:600;backdrop-filter:blur(4px)}
+  .hero h1{font-size:clamp(2.6rem,7vw,4.6rem);margin:14px 0 8px}
+  .hero h1 .script{display:block;font-size:.75em;color:#ffd2ad;font-weight:400}
+  .hero p{max-width:620px;font-size:1.08rem;opacity:.95}
+  .hero .btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+
+  .subnav{background:#fff;border-bottom:1px solid var(--borde);position:sticky;top:84px;z-index:40}
+  .subnav .wrap{display:flex;gap:8px;overflow-x:auto;padding:12px 0;scrollbar-width:none}
+  .subnav a{white-space:nowrap;padding:8px 16px;border-radius:50px;border:1.5px solid var(--borde);font-weight:600;font-size:.88rem}
+  .subnav a:hover{border-color:var(--primario);color:var(--primario)}
+
+  section{padding:80px 0;scroll-margin-top:140px}
+  .intro{display:grid;grid-template-columns:1.1fr 1fr;gap:50px;align-items:center}
+  .intro p{color:var(--gris);margin-bottom:14px;font-size:1.05rem}
+  .intro .lema{font-family:'Parisienne',cursive;font-size:2.1rem;color:var(--naranja);line-height:1.2}
+  .pilares{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .pilar{background:#fff;border:1px solid var(--borde);border-radius:20px;padding:20px}
+  .pilar .ic{font-size:1.7rem}
+  .pilar h3{font-size:1rem;margin:4px 0}
+  .pilar p{color:var(--gris);font-size:.86rem;margin:0}
+
+  .bloque{display:grid;grid-template-columns:1fr 1.3fr;gap:50px;align-items:start}
+  .bloque.inv .txt{order:2}
+  .bloque .txt{position:sticky;top:160px}
+  .bloque .ico{font-size:2.4rem}
+  .bloque h2{font-size:clamp(2rem,4vw,2.7rem);margin:6px 0 16px}
+  .bloque h2::after{content:"";display:block;width:56px;height:4px;background:var(--naranja);border-radius:3px;margin-top:10px}
+  .bloque p{color:var(--gris);margin-bottom:14px}
+  .fotos{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .fotos.una{grid-template-columns:1fr}
+  .fotos button{display:block;width:100%;border:none;padding:0;background:none;cursor:zoom-in;border-radius:18px;overflow:hidden;aspect-ratio:4/3}
+  .fotos button:first-child:nth-last-child(odd){grid-column:1/-1;aspect-ratio:16/9}
+  .fotos img{width:100%;height:100%;object-fit:cover;transition:.4s}
+  .fotos button:hover img{transform:scale(1.04)}
+  section.alt{background:#fff}
+  section.oscuro{background:var(--pizarra);color:#fff}
+  section.oscuro p{color:#c9cfcb}
+  .pasos{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:22px 0 6px}
+  .paso{background:#2f3439;border:1px solid #42484d;border-radius:16px;padding:14px 10px;text-align:center;position:relative}
+  .paso:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--naranja);font-weight:800;z-index:1}
+  .paso .e{font-size:1.5rem}
+  .paso b{display:block;font-size:.9rem;margin-top:2px}
+  .paso small{display:block;color:#aeb5b1;font-size:.74rem;line-height:1.3}
+
+  .amb{background:var(--crema)}
+  .linea{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:30px}
+  .linea li{border-top:3px solid var(--naranja);padding-top:12px;font-size:.9rem;color:var(--gris)}
+  .linea b{display:block;font-size:1.25rem;color:var(--negro);margin-bottom:4px}
+  .cumple{margin-top:26px;font-size:.88rem;color:var(--gris);border-top:1px dashed var(--borde);padding-top:16px}
+  .titulo{text-align:center;margin-bottom:10px}
+  .titulo .script{color:var(--naranja);font-size:2.4rem;display:block;line-height:1}
+  .titulo h2{font-size:clamp(2rem,4vw,2.7rem)}
+
+  .cta{background:linear-gradient(120deg,var(--primario),var(--primario-osc));color:#fff;border-radius:30px;padding:56px;text-align:center}
+  .cta h2{font-size:clamp(1.8rem,4vw,2.6rem)}
+  .cta p{opacity:.9;margin:12px 0 24px}
+  .cta .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  footer{padding:50px 0 30px;text-align:center}
+  footer img{height:80px;width:auto;margin:0 auto 12px}
+  footer small{color:var(--gris)}
+  .wa-float{position:fixed;right:22px;bottom:22px;width:60px;height:60px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 10px 25px rgba(37,211,102,.45);z-index:60}
+
+  .lb{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px}
+  .lb.show{display:flex}
+  .lb img{max-height:80vh;max-width:94vw;border-radius:12px;object-fit:contain}
+  .lb p{color:#ddd;margin-top:12px;font-size:.92rem;text-align:center}
+  .lb button{position:absolute;background:rgba(255,255,255,.12);color:#fff;border:none;width:48px;height:48px;border-radius:50%;font-size:1.5rem;cursor:pointer}
+  .lb .x{top:18px;right:18px}.lb .ant{left:14px;top:50%}.lb .sig{right:14px;top:50%}
+
+  @media(max-width:900px){
+    .nav ul{position:absolute;top:84px;left:0;right:0;flex-direction:column;background:var(--crema);padding:20px 6%;gap:16px;border-bottom:1px solid var(--borde);display:none}
+    .nav ul.open{display:flex}
+    .menu-toggle{display:block}
+    .nav .btn{display:none}
+    .intro,.bloque{grid-template-columns:1fr;gap:28px}
+    .bloque.inv .txt{order:0}
+    .bloque .txt{position:static}
+    .linea{grid-template-columns:1fr}
+    .cta{padding:40px 22px}
+    section{padding:60px 0}
+  }
+  @media(max-width:560px){
+    .pilares{grid-template-columns:1fr}
+    .pasos{grid-template-columns:1fr 1fr;gap:16px}
+    .paso:nth-child(2)::after{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav wrap">
+    <a href="index.html"><img src="logo.png" alt="{{nombre}}"></a>
+    <ul id="links">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="index.html#menu">Productos</a></li>
+      <li><a href="granja.html" class="act">Nuestra granja</a></li>
+      <li><a href="index.html#visitanos">Visítanos</a></li>
+    </ul>
+    <a class="btn" href="index.html#menu">🛒 Armar pedido</a>
+    <button class="menu-toggle" aria-label="Abrir menú" onclick="document.getElementById('links').classList.toggle('open')">☰</button>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <span class="tag" id="hUbic"></span>
+    <h1><span class="script" id="hScript"></span><span id="hNombre"></span></h1>
+    <p id="hTexto"></p>
+    <div class="btns">
+      <a href="#cerdos" class="btn blanco">Conocé la granja ↓</a>
+      <a href="index.html?cat=Cerdo#menu" class="btn nar">🛒 Ver cortes</a>
+    </div>
+  </div>
+</section>
+
+<nav class="subnav" aria-label="Secciones"><div class="wrap" id="subnav"></div></nav>
+
+<section>
+  <div class="wrap intro">
+    <div>
+      <div id="intro"></div>
+      <p class="lema" id="lema"></p>
+    </div>
+    <div class="pilares" id="pilares"></div>
+  </div>
+</section>
+
+<div id="bloques"></div>
+
+<section class="amb" id="ambiente">
+  <div class="wrap">
+    <div class="titulo"><span class="script">Comprometidos</span><h2>con el ambiente</h2></div>
+    <ol class="linea" id="linea"></ol>
+    <p class="cumple" id="cumple"></p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta">
+      <h2>De nuestra granja a su mesa 🥩</h2>
+      <p>Arme su pedido de cerdo o res y páselo a recoger a la hora que elija.</p>
+      <div class="btns">
+        <a class="btn blanco" href="index.html?cat=Cerdo#menu">🐖 Cortes de cerdo</a>
+        <a class="btn nar" href="index.html?cat=Res#menu">🥩 Cortes de res</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <img src="logo.png" alt="{{nombre}}">
+    <small>© <span id="year"></span> {{nombre}} · {{lema}}</small>
+  </div>
+</footer>
+
+<a class="wa-float" id="wa" href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.2-.3.2-.6.1a8.2 8.2 0 0 1-4.1-3.6c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.8.4 3.5 3.5 0 0 0-1.1 2.6 6 6 0 0 0 1.3 3.2 13.8 13.8 0 0 0 5.3 4.7c2 .8 2.7.9 3.7.8a3.1 3.1 0 0 0 2-1.4 2.5 2.5 0 0 0 .2-1.4c-.1-.2-.3-.3-.6-.4M12 21.8a9.9 9.9 0 0 1-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.9 9.9 0 1 1 12 21.8m8.4-18.3A11.8 11.8 0 0 0 1.7 17.7L0 24l6.4-1.7A11.8 11.8 0 0 0 24 12a11.8 11.8 0 0 0-3.6-8.5"/></svg>
+</a>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Foto ampliada">
+  <button class="x" id="lbX" aria-label="Cerrar">×</button>
+  <button class="ant" id="lbAnt" aria-label="Anterior">‹</button>
+  <img id="lbImg" alt="">
+  <p id="lbTxt"></p>
+  <button class="sig" id="lbSig" aria-label="Siguiente">›</button>
+</div>
+
+<script type="module">
+import * as N from "./negocio.js";
+const { NEGOCIO, CONFIG, GRANJA: G } = N;
+const $ = id => document.getElementById(id);
+const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+document.querySelector(".hero").style.backgroundImage = `url('${G.hero}')`;
+$("hUbic").textContent = "📍 " + G.ubicacion;
+$("hScript").textContent = G.script + " a su mesa";
+$("hNombre").textContent = G.nombre;
+$("hTexto").textContent = G.intro[0];
+$("intro").innerHTML = G.intro.slice(1).map(t=>`<p>${esc(t)}</p>`).join("");
+$("lema").textContent = G.lema;
+$("pilares").innerHTML = G.pilares.map(([ic,t,d])=>`<div class="pilar"><div class="ic">${ic}</div><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("");
+
+// Galería: todas las fotos de los bloques, para el visor
+const todas = [];
+$("bloques").innerHTML = G.bloques.map((b,i)=>{
+  const fotos = b.fotos.map(([src,alt])=>{ todas.push([src,alt]); const k=todas.length-1;
+    return `<button data-k="${k}" aria-label="Ampliar: ${esc(alt)}"><img src="${esc(src)}" alt="${esc(alt)}" loading="lazy"></button>`; }).join("");
+  return `<section id="${b.id}" class="${b.oscuro?"oscuro":(i%2?"alt":"")}">
+    <div class="wrap bloque ${i%2?"inv":""}">
+      <div class="txt">
+        <div class="ico" aria-hidden="true">${b.ico}</div>
+        <h2>${esc(b.titulo)}</h2>
+        ${b.texto.map(t=>`<p>${esc(t)}</p>`).join("")}
+        ${b.pasos?`<div class="pasos">${b.pasos.map(([e,t,d])=>`<div class="paso"><div class="e">${e}</div><b>${esc(t)}</b><small>${esc(d)}</small></div>`).join("")}</div>`:""}
+      </div>
+      <div class="fotos ${b.fotos.length===1?"una":""}">${fotos}</div>
+    </div>
+  </section>`;
+}).join("");
+$("subnav").innerHTML = G.bloques.map(b=>`<a href="#${b.id}">${b.ico} ${esc(b.titulo)}</a>`).join("") + `<a href="#ambiente">🌱 Ambiente</a>`;
+$("linea").innerHTML = G.linea.map(([a,t])=>`<li><b>${esc(a)}</b>${esc(t)}</li>`).join("");
+$("cumple").textContent = G.cumplimiento || "";
+$("year").textContent = new Date().getFullYear();
+$("wa").href = CONFIG.whatsapp ? `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(`Hola ${NEGOCIO.nombreCorto}, vi la página de la granja y quiero hacer una consulta.`)}` : `tel:+506${CONFIG.telefonos[0].replace(/\D/g,"")}`;
+
+// Visor de fotos
+let actual = 0;
+const mostrar = k => { actual = (k + todas.length) % todas.length; const [src,alt] = todas[actual]; $("lbImg").src = src; $("lbImg").alt = alt; $("lbTxt").textContent = alt; };
+const cerrar = () => { $("lb").classList.remove("show"); document.body.style.overflow = ""; };
+document.querySelectorAll(".fotos button").forEach(b=>b.onclick=()=>{ mostrar(+b.dataset.k); $("lb").classList.add("show"); document.body.style.overflow = "hidden"; });
+$("lbX").onclick = cerrar;
+$("lbAnt").onclick = () => mostrar(actual-1);
+$("lbSig").onclick = () => mostrar(actual+1);
+$("lb").onclick = e => { if (e.target === $("lb")) cerrar(); };
+document.addEventListener("keydown", e => {
+  if (!$("lb").classList.contains("show")) return;
+  if (e.key === "Escape") cerrar(); if (e.key === "ArrowLeft") mostrar(actual-1); if (e.key === "ArrowRight") mostrar(actual+1);
+});
+let x0 = null;
+$("lb").addEventListener("touchstart", e => x0 = e.touches[0].clientX, {passive:true});
+$("lb").addEventListener("touchend", e => { if (x0===null) return; const d = e.changedTouches[0].clientX - x0; if (Math.abs(d) > 50) mostrar(actual + (d<0?1:-1)); x0 = null; });
+document.querySelectorAll("#links a").forEach(a=>a.onclick=()=>$("links").classList.remove("open"));
+</script>
+</body>
+</html>

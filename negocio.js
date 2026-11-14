@@ -65,7 +65,7 @@ export const NEGOCIO = {
 
 export const MODULOS = {
   tarjeta: true,
-  granja: true          // sección "Nuestra granja" (datos en GRANJA, abajo)
+  granja: true          // resumen en el inicio + página granja.html (datos en GRANJA, abajo)
 };
 
 export const CONFIG = {
@@ -97,7 +97,7 @@ const FIAMBRE = { unidad: "kg", paso: 0.25, opciones: [0.25, 0.5] };   // embuti
 
 export const MENU = {
   "Res": [
-    { titulo: "Res", ico: "🥩", sub: "Precios por kilo", ...KG, platos: [
+    { titulo: "Res", ico: "🥩", sub: "De nuestra propia granja, Cosecha Porcina · precios por kilo", ...KG, platos: [
       { nombre: "Lomito", precio: 12500 },
       { nombre: "Lomo", precio: 7800 },
       { nombre: "T-bone", precio: 8000 },
@@ -125,7 +125,7 @@ export const MENU = {
     ]}
   ],
   "Cerdo": [
-    { titulo: "Cerdo", ico: "🐖", sub: "De nuestra propia Granja Porcina San Rafael · precios por kilo", ...KG, platos: [
+    { titulo: "Cerdo", ico: "🐖", sub: "De nuestra propia granja, Cosecha Porcina · precios por kilo", ...KG, platos: [
       { nombre: "Lomo de cerdo", precio: 5800 },
       { nombre: "Lomito de cerdo", precio: 5200 },
       { nombre: "Posta de cerdo", precio: 4000 },
@@ -251,29 +251,87 @@ export const MENU = {
 };
 
 // =========================================================
-//  NUESTRA GRANJA — Granja Porcina San Rafael (producción propia).
-//  Datos tomados de la presentación de la granja (2025).
+//  COSECHA PORCINA — la granja propia (cerdos y ganado).
+//  Resumen en la página principal + página completa granja.html.
+//  Fotos en assets/img/granja/. Datos de la presentación de la
+//  Granja Porcina San Rafael (2025) y fotos del cliente (nov 2026).
 // =========================================================
+const F = "img/granja/";
 export const GRANJA = {
+  nombre: "Cosecha Porcina",
+  ubicacion: "Granja Porcina San Rafael · Santa Cruz de Turrialba",
   script: "De nuestra granja",
   titulo: "a su mesa.",
-  nombre: "Granja Porcina San Rafael",
+  lema: "Alimentando vidas en todos los sentidos",
   intro: [
-    "El cerdo que vendemos en La Central lo criamos nosotros mismos en la Granja Porcina San Rafael, en Santa Cruz de Turrialba. Así sabemos de dónde viene cada corte y cómo se cuidó desde el primer día.",
+    "En Cosecha Porcina criamos los cerdos y el ganado que llegan a La Central. Así sabemos de dónde viene cada corte y cómo se cuidó desde el primer día.",
     "Creemos que producir con responsabilidad es producir de forma sostenible: cuidamos el bienestar de los animales, a nuestros colaboradores, a la comunidad y el entorno."
   ],
-  lema: "Alimentando vidas en todos los sentidos",
-  fotos: [
-    ["img/granja/corrales.jpg", "Corrales de la Granja Porcina San Rafael con el personal atendiendo a los cerdos"],
-    ["img/granja/lechones.jpg", "Lechones recién nacidos en la granja"],
-    ["img/granja/equipo.jpg", "Equipo de trabajo de la granja"],
-    ["img/granja/vista-aerea.jpg", "Vista aérea de la granja y su sistema de tratamiento de aguas"]
+  // Resumen en la página principal
+  fotosResumen: [
+    [F + "maternidad.jpg", "Cerda con sus lechones en la maternidad"],
+    [F + "terneros.jpg", "Terneros en el corral de la finca"],
+    [F + "engorde.jpg", "Corrales de engorde de cerdos"],
+    [F + "biodigestor-biogas.jpg", "Biodigestor que produce biogás"]
   ],
   pilares: [
-    ["🐖", "Producción propia", "Criamos los cerdos que llegan a nuestro mostrador: carne fresca, sin intermediarios."],
+    ["🐖", "Producción propia", "Criamos los cerdos y el ganado que llegan a nuestro mostrador: carne fresca, sin intermediarios."],
     ["❤️", "Bienestar animal", "Cada decisión en la granja se toma pensando primero en el bienestar de nuestros animales."],
-    ["🌱", "Gestión ambiental", "Tratamos las aguas de la granja con biodigestores y las reutilizamos como abono para pastos, con asesoría técnica."],
+    ["⚡", "Biogás", "Los desechos de los cerdos y la boñiga del ganado se convierten en biogás, una energía renovable."],
     ["🤝", "Nuestra gente", "A lo largo de nuestra historia hemos dado empleo a más de 40 colaboradores de la zona."]
+  ],
+
+  // Página completa (granja.html): bloques de texto + fotos, en orden
+  hero: F + "engorde.jpg",
+  bloques: [
+    { id: "cerdos", ico: "🐖", titulo: "Nuestros cerdos",
+      texto: [
+        "Acompañamos a cada animal en todas sus etapas: desde la maternidad, donde las cerdas cuidan a sus lechones, hasta los corrales de crecimiento y engorde.",
+        "Trabajamos con instalaciones techadas y ventiladas, pisos adecuados para cada etapa, comederos y agua siempre disponibles, y personal que los atiende todos los días."
+      ],
+      fotos: [
+        [F + "maternidad.jpg", "Cerda amamantando a sus lechones"],
+        [F + "lechones.jpg", "Lechones recién nacidos"],
+        [F + "lechones-comedero.jpg", "Lechones en su corral con comedero"],
+        [F + "lechones-corral.jpg", "Corrales de lechones"],
+        [F + "engorde.jpg", "Corrales de engorde"],
+        [F + "corrales.jpg", "Personal atendiendo a los cerdos"]
+      ]},
+    { id: "ganado", ico: "🐄", titulo: "Nuestro ganado",
+      texto: [
+        "Además de cerdos, criamos ganado para la carnicería. Los animales crecen en corrales amplios, con buena alimentación y cuidado diario.",
+        "Así podemos ofrecer en el mostrador carne de res que conocemos desde su origen."
+      ],
+      fotos: [
+        [F + "terneros.jpg", "Terneros en el corral"],
+        [F + "terneros-corral.jpg", "Vaca con terneros"],
+        [F + "ganado-comedero.jpg", "Ganado en el comedero"],
+        [F + "ganado-comiendo.jpg", "Ganado alimentándose"]
+      ]},
+    { id: "biogas", ico: "⚡", titulo: "Energía que sale de la granja", oscuro: true,
+      texto: [
+        "Nada se desperdicia. Los desechos de los cerdos y la boñiga del ganado van a biodigestores, donde se descomponen sin oxígeno y producen biogás: un gas natural y renovable.",
+        "Lo que queda del proceso se trata en lagunas y se aprovecha como abono para los pastos, con análisis de suelos y criterios técnicos, sin contaminar los ríos y quebradas cercanos."
+      ],
+      pasos: [
+        ["🐖🐄", "Desechos", "Excremento de cerdo y boñiga"],
+        ["🫧", "Biodigestor", "Se descomponen sin oxígeno"],
+        ["⚡", "Biogás", "Gas natural renovable"],
+        ["🌱", "Abono", "El efluente nutre los pastos"]
+      ],
+      fotos: [
+        [F + "biodigestor-biogas.jpg", "Biodigestor inflado con biogás"],
+        [F + "laguna-tratamiento.jpg", "Laguna del sistema de tratamiento"],
+        [F + "vista-aerea.jpg", "Vista aérea de la granja y su sistema de tratamiento"]
+      ]},
+    { id: "equipo", ico: "🤝", titulo: "Nuestra gente",
+      texto: [
+        "Detrás de cada corte hay un equipo de la zona que trabaja todos los días en la granja. A lo largo de nuestra historia hemos empleado a más de 40 colaboradores locales.",
+        "Buscamos crear un entorno amigable y justo para nuestros colaboradores, nuestra comunidad y nuestro entorno en general."
+      ],
+      fotos: [
+        [F + "equipo.jpg", "Equipo de trabajo de la granja"]
+      ]}
   ],
   cumplimiento: "Cumplimos los reglamentos 33601-MINAE (vertido y reúso de aguas residuales) y 42367-MAG (aprovechamiento de efluentes como abono), con regente ambiental y asesoría de AM-Biogas.",
   linea: [

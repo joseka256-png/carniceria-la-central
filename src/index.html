@@ -113,7 +113,7 @@
   .granja-fotos{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .granja-fotos img{width:100%;height:100%;aspect-ratio:4/3;object-fit:cover;border-radius:20px}
   .granja-fotos img:nth-child(2){margin-top:34px}.granja-fotos img:nth-child(3){margin-top:-34px}
-  .pilares{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:56px 0}
+  .pilares{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:56px 0 0}
   .pilar{background:var(--crema);border:1px solid var(--borde);border-radius:20px;padding:24px}
   .pilar .ic{font-size:1.9rem;margin-bottom:8px}
   .pilar h3{font-size:1.05rem;margin-bottom:6px}
@@ -306,7 +306,7 @@
       <li><a href="#inicio">Inicio</a></li>
       <li><a href="#menu">Menú</a></li>
 <!--@tarjeta-->      <li><a href="#tarjeta">Tarjeta cliente</a></li>
-<!--/@tarjeta--><!--@granja-->      <li><a href="#granja">Nuestra granja</a></li>
+<!--/@tarjeta--><!--@granja-->      <li><a href="granja.html">Nuestra granja</a></li>
 <!--/@granja-->      <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#visitanos">Visítanos</a></li>
     </ul>
@@ -363,16 +363,14 @@
         <span class="tag" id="gNombre"></span>
         <div id="gIntro"></div>
         <p class="granja-lema" id="gLema"></p>
-        <a href="#menu" class="btn" id="gVerCerdo">🐖 Ver cortes de cerdo →</a>
+        <div class="hero-btns">
+          <a href="granja.html" class="btn" id="gConocer">Conocé la granja →</a>
+          <a href="#menu" class="btn outline" id="gVerCerdo">🐖 Ver cortes de cerdo</a>
+        </div>
       </div>
       <div class="granja-fotos" id="gFotos"></div>
     </div>
     <div class="pilares" id="gPilares"></div>
-    <div class="granja-amb">
-      <h3>🌱 Comprometidos con el ambiente</h3>
-      <ol class="linea" id="gLinea"></ol>
-      <p class="granja-cumple" id="gCumple"></p>
-    </div>
   </div>
 </section>
 <!--/@granja-->
@@ -615,7 +613,8 @@ function pintarCategoria(cat, q = ""){
 
 const cats = [TODO, ...Object.keys(MENU)];
 document.getElementById("tabs").innerHTML = cats.map(c=>`<button class="tab" data-cat="${c}">${c}</button>`).join("");
-let catActual = Object.keys(MENU)[0];
+const catUrl = new URLSearchParams(location.search).get("cat");
+let catActual = MENU[catUrl] ? catUrl : Object.keys(MENU)[0];
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{ catActual = t.dataset.cat; $b.value = ""; pintarCategoria(catActual); });
 const $b = document.getElementById("buscar");
 $b.addEventListener("input", ()=>pintarCategoria(catActual, $b.value.trim()));
@@ -757,13 +756,11 @@ pintarCarrito();
 /* ====================== GRANJA ====================== */
 const G = N.GRANJA, $g = id => document.getElementById(id);
 if (G && $g("granja")) {
-  $g("gScript").textContent = G.script; $g("gTitulo").textContent = G.titulo; $g("gNombre").textContent = "🐖 " + G.nombre;
+  $g("gScript").textContent = G.script; $g("gTitulo").textContent = G.titulo; $g("gNombre").textContent = "🐖 " + G.nombre + " · " + (G.ubicacion||"");
   $g("gIntro").innerHTML = G.intro.map(t=>`<p>${esc(t)}</p>`).join("");
   $g("gLema").textContent = G.lema || "";
-  $g("gFotos").innerHTML = G.fotos.map(([src,alt])=>`<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy">`).join("");
+  $g("gFotos").innerHTML = (G.fotosResumen || G.fotos || []).map(([src,alt])=>`<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy">`).join("");
   $g("gPilares").innerHTML = G.pilares.map(([ic,t,d])=>`<div class="pilar"><div class="ic">${ic}</div><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("");
-  $g("gLinea").innerHTML = G.linea.map(([a,t])=>`<li><b>${esc(a)}</b>${esc(t)}</li>`).join("");
-  $g("gCumple").textContent = G.cumplimiento || "";
   $g("gVerCerdo").onclick = e => { e.preventDefault(); if (MENU["Cerdo"]) { catActual = "Cerdo"; $b.value = ""; pintarCategoria("Cerdo"); } document.getElementById("menu").scrollIntoView({behavior:"smooth"}); };
 }
 
