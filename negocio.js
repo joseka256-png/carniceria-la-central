@@ -52,6 +52,14 @@ export const NEGOCIO = {
     stats: [["75+", "Años de servicio"], ["100%", "Carne fresca"], ["⭐", "Cliente frecuente"]]
   },
 
+  // Textos de la sección de productos (opcionales)
+  menu: {
+    script: "Nuestros",
+    titulo: "Productos",
+    notaPrep: "🔪 Cortado al momento · listo en",
+    nota: "🛒 Agregue productos, toque <b>Ver pedido</b> y elija a qué hora pasa a retirarlo · Precios en colones con IVA, sujetos a cambio. Los productos por kilo se cobran según el peso exacto."
+  },
+
   cta: { titulo: "¿Ya sabe qué va a llevar? 🥩", texto: "Arme su pedido y páselo a recoger a la hora que elija." }
 };
 
@@ -76,27 +84,167 @@ export const CONFIG = {
 };
 
 /* =========================================================
-   MENÚ — PENDIENTE: productos y precios reales del cliente.
-   Esto es solo la estructura de ejemplo (precios "Por confirmar").
+   MENÚ — productos y precios (lista del local, precios con IVA).
+   precio: número en colones (o texto tal cual, ej. "Por confirmar").
+   unidad: "kg" (se pide por peso) · "paquete" · "unid". Se puede poner
+           por sección (vale para todos sus productos) o por producto.
+   paso:   cuánto sube/baja el peso en el carrito (kg). Por defecto 0.5.
+   inicial: peso con que entra al carrito. Por defecto 1 kg.
    ========================================================= */
+const KG = { unidad: "kg" };
+const FIAMBRE = { unidad: "kg", paso: 0.25, inicial: 0.5 };   // embutidos por peso: de ¼ kg
+
 export const MENU = {
   "Res": [
-    { titulo: "Res", ico: "🥩", platos: [
-      { nombre: "Bistec", precio: "Por confirmar", desc: "Precio por kilo" },
-      { nombre: "Carne molida", precio: "Por confirmar", desc: "Precio por kilo" },
-      { nombre: "Posta", precio: "Por confirmar", desc: "Precio por kilo" }
+    { titulo: "Res", ico: "🥩", sub: "Precios por kilo", ...KG, platos: [
+      { nombre: "Lomito", precio: 12500 },
+      { nombre: "Lomo", precio: 7800 },
+      { nombre: "T-bone", precio: 8000 },
+      { nombre: "Lengua", precio: 8500 },
+      { nombre: "Cabeza de lomo", precio: 6800 },
+      { nombre: "Posta de cuarto", precio: 6800 },
+      { nombre: "Punta de solomo", precio: 6500 },
+      { nombre: "Mano de piedra", precio: 6500 },
+      { nombre: "Cacho de paleta", precio: 6200 },
+      { nombre: "Paleta (posta)", precio: 6200 },
+      { nombre: "Bistec arreglado", precio: 6200 },
+      { nombre: "Pecho", precio: 5800 },
+      { nombre: "Quititeña", precio: 5800 },
+      { nombre: "Cubitos de res", precio: 5800 },
+      { nombre: "Molida premium", precio: 5000 },
+      { nombre: "Molida especial", precio: 4000 },
+      { nombre: "Posta de ternero", precio: 4000 },
+      { nombre: "Costilla de res", precio: 3800 },
+      { nombre: "Rabo", precio: 3800 },
+      { nombre: "Hueso uco", precio: 3800 },
+      { nombre: "Hígado", precio: 3200 },
+      { nombre: "Mondongo", precio: 3200 },
+      { nombre: "Hueso de pescuezo", precio: 2900 },
+      { nombre: "Hueso para sopa", precio: 800 }
     ]}
   ],
   "Cerdo": [
-    { titulo: "Cerdo", ico: "🐖", platos: [
-      { nombre: "Chuleta", precio: "Por confirmar", desc: "Precio por kilo" },
-      { nombre: "Costilla", precio: "Por confirmar", desc: "Precio por kilo" }
+    { titulo: "Cerdo", ico: "🐖", sub: "Precios por kilo", ...KG, platos: [
+      { nombre: "Lomo de cerdo", precio: 5800 },
+      { nombre: "Lomito de cerdo", precio: 5200 },
+      { nombre: "Posta de cerdo", precio: 4000 },
+      { nombre: "Posta de cerdo en cubitos", precio: 3900 },
+      { nombre: "Chuleta de cerdo", precio: 4000 },
+      { nombre: "Costilla de cerdo", precio: 4000 },
+      { nombre: "Costillón", precio: 4000 },
+      { nombre: "Chorizo", precio: 2200 },
+      { nombre: "Manteca", precio: 1800 },
+      { nombre: "Pezuña", precio: 1000 }
+    ]},
+    { titulo: "Ahumados La Central", ico: "🔥", sub: "De la casa · precios por kilo", ...KG, platos: [
+      { nombre: "Chuleta ahumada", precio: 5400 },
+      { nombre: "Costilla ahumada", precio: 7000 }
     ]}
   ],
   "Pollo": [
-    { titulo: "Pollo", ico: "🍗", platos: [
-      { nombre: "Pechuga", precio: "Por confirmar", desc: "Precio por kilo" },
-      { nombre: "Muslo", precio: "Por confirmar", desc: "Precio por kilo" }
+    { titulo: "Pollo", ico: "🍗", sub: "Precios por kilo", ...KG, platos: [
+      { nombre: "Pollo entero", precio: 2800 },
+      { nombre: "Pechuga", precio: 3500 },
+      { nombre: "Muslo", precio: 2500 },
+      { nombre: "Muslito en bolsa", precio: 3900 },
+      { nombre: "Filet de pechuga", precio: 5400 },
+      { nombre: "Filet BBQ", precio: 5400 },
+      { nombre: "Molida de pollo (paquete)", precio: 2700, unidad: "paquete" }
+    ]}
+  ],
+  "Pescado": [
+    { titulo: "Pescado", ico: "🐟", sub: "Precios por kilo", ...KG, platos: [
+      { nombre: "Tilapia", precio: 6800 },
+      { nombre: "Corvina", precio: 3500 }
+    ]}
+  ],
+  "Embutidos": [
+    { titulo: "Zar", ico: "🥓", platos: [
+      { nombre: "Tocineta ahumada Zar", precio: 13000, ...FIAMBRE },
+      { nombre: "Salame Zar", precio: 15000, ...FIAMBRE },
+      { nombre: "Jamón Span Zar", precio: 13000, ...FIAMBRE },
+      { nombre: "Salchichas Zar", precio: 2000, unidad: "paquete" },
+      { nombre: "Salchichas de desayuno Zar", precio: 3200, unidad: "paquete" },
+      { nombre: "Pepperoni Zar", precio: 1800, unidad: "paquete" }
+    ]},
+    { titulo: "Zurquí", ico: "🥪", platos: [
+      { nombre: "Jamón Zurquí", precio: 7000, ...FIAMBRE },
+      { nombre: "Jamonada Zurquí", precio: 5800, ...FIAMBRE },
+      { nombre: "Salchicha Zurquí", precio: 1800, unidad: "paquete" },
+      { nombre: "Mortadela con chile Zurquí", precio: 3000, unidad: "unid" },
+      { nombre: "Mortadela de pollo Zurquí", precio: 3000, unidad: "unid" }
+    ]},
+    { titulo: "Fud", ico: "🦃", platos: [
+      { nombre: "Jamón de pavo ahumado Fud", precio: 12000, ...FIAMBRE },
+      { nombre: "Jamón Span Fud", precio: 11000, ...FIAMBRE },
+      { nombre: "Pechuga de pavo Fud", precio: 12000, ...FIAMBRE },
+      { nombre: "Salchicha de pavo pequeña Fud", precio: 1800, unidad: "paquete" }
+    ]},
+    { titulo: "Don Luis", ico: "🌭", unidad: "unid", platos: [
+      { nombre: "Salchichas Don Luis", precio: 2800, unidad: "paquete" },
+      { nombre: "Salchichas de pollo Don Luis", precio: 2800, unidad: "paquete" },
+      { nombre: "Jamón Don Luis", precio: 2800, unidad: "paquete" },
+      { nombre: "Jamón de pavo Don Luis", precio: 7000 },
+      { nombre: "Paté Don Luis", precio: 4800 },
+      { nombre: "Salchichón de pollo Don Luis", precio: 2800 },
+      { nombre: "Salchichón rueda Don Luis", precio: 1600 },
+      { nombre: "Combo Don Luis", precio: 3800 }
+    ]},
+    { titulo: "La Única", ico: "🌭", unidad: "unid", platos: [
+      { nombre: "Salchichón La Única", precio: 2200 },
+      { nombre: "Mortadela La Única", precio: 2200 },
+      { nombre: "Salchichón jamonado La Única", precio: 2500 },
+      { nombre: "Cantones La Única", precio: 3000 }
+    ]},
+    { titulo: "Tucurrique", ico: "🌭", unidad: "unid", platos: [
+      { nombre: "Salchichón carnicero", precio: 2500 },
+      { nombre: "Salchichón de pejibaye", precio: 2500 },
+      { nombre: "Salchichón parrillero", precio: 3500 },
+      { nombre: "Salchichón con cerdo", precio: 2500 },
+      { nombre: "Salchichón caribeño", precio: 2500 },
+      { nombre: "Jamón Span Tucurrique", precio: 4000 },
+      { nombre: "Pechuga de pavo Tucurrique", precio: 6000 },
+      { nombre: "Jamonada Tucurrique", precio: 4000 },
+      { nombre: "Morcilla", precio: 3200 },
+      { nombre: "Pepperoni Tucurrique", precio: 1000, unidad: "paquete" },
+      { nombre: "Salame Tucurrique", precio: 1000, unidad: "paquete" }
+    ]},
+    { titulo: "Cinta Azul y otros", ico: "🌭", unidad: "unid", platos: [
+      { nombre: "Mortadela sin grasa Cinta Azul", precio: 3000 },
+      { nombre: "Mortadela con chile Cinta Azul", precio: 3000 },
+      { nombre: "Salchichón keto", precio: 2850 }
+    ]}
+  ],
+  "Lácteos": [
+    { titulo: "Lácteos", ico: "🧀", platos: [
+      { nombre: "Queso fresco", precio: 3800, unidad: "kg" },
+      { nombre: "Queso semiduro", precio: 4400, unidad: "kg" },
+      { nombre: "Queso maduro", precio: 5900, unidad: "kg" },
+      { nombre: "Mozzarella", precio: 7000, unidad: "kg" },
+      { nombre: "Maduro empacado", precio: 6200, unidad: "paquete" },
+      { nombre: "Mozzarella rallada", precio: 1800, unidad: "paquete" },
+      { nombre: "Natilla pequeña", precio: 650, unidad: "unid" },
+      { nombre: "Natilla grande", precio: 1250, unidad: "unid" },
+      { nombre: "Leche agria (botella)", precio: 1000, unidad: "unid" }
+    ]}
+  ],
+  "Otros": [
+    { titulo: "Productos Don Raúl", ico: "🫙", unidad: "unid", platos: [
+      { nombre: "Palmito", precio: 1500 },
+      { nombre: "Pejibaye", precio: 1600 },
+      { nombre: "Chiles rellenos", precio: 1800 },
+      { nombre: "Chiles mitades", precio: 1300 },
+      { nombre: "Palmito en tarro entero", precio: 1800 },
+      { nombre: "Palmito en tarro picado", precio: 1500 }
+    ]},
+    { titulo: "Vegetales", ico: "🥦", unidad: "paquete", platos: [
+      { nombre: "Zanahoria con vainica", precio: 1500 },
+      { nombre: "Ensalada", precio: 1500 },
+      { nombre: "Mixto (brócoli)", precio: 1500 }
+    ]},
+    { titulo: "Para la parrilla", ico: "🔥", platos: [
+      { nombre: "Carbón", precio: 1400, unidad: "paquete" },
+      { nombre: "Salsa de chile chipotle", precio: 2000, unidad: "unid" }
     ]}
   ]
 };

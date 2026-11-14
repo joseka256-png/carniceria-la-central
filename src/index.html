@@ -97,6 +97,12 @@
   .pedir{font-size:.8rem;font-weight:600;color:#fff;border-bottom:2px solid var(--naranja);white-space:nowrap;margin-left:auto}
   @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   .nota{text-align:center;color:#b9c0bc;font-size:.85rem;margin-top:30px}
+  .precio small{font-weight:500;opacity:.85;font-size:.78rem}
+  .buscar{max-width:520px;margin:0 auto 18px}
+  .buscar input{width:100%;padding:12px 18px;border-radius:50px;border:2px solid #3b4146;background:#2c3135;color:#fff;font-family:inherit;font-size:.95rem}
+  .buscar input:focus{outline:none;border-color:var(--primario)}
+  .buscar input::placeholder{color:#9aa29e}
+  .sin-res{grid-column:1/-1;text-align:center;color:#b9c0bc;padding:30px 0}
 
   /* NOSOTROS */
   .about{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
@@ -221,7 +227,7 @@
   .qty{display:flex;align-items:center;gap:6px}
   .qty button{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--borde);background:var(--crema);font-size:1rem;font-weight:700;cursor:pointer;color:var(--negro)}
   .qty button:hover{border-color:var(--primario);color:var(--primario)}
-  .qty span{min-width:20px;text-align:center;font-weight:700}
+  .qty span{min-width:20px;text-align:center;font-weight:700;white-space:nowrap}
   .car-item .sub{font-weight:700;color:var(--primario);min-width:70px;text-align:right}
   .car-vacio{text-align:center;color:var(--gris);padding:50px 10px}
   .car-vacio div{font-size:3rem;margin-bottom:8px}
@@ -304,13 +310,14 @@
 <section id="menu">
   <div class="wrap">
     <div class="titulo">
-      <span class="script">Nuestro</span>
-      <h2>Menú</h2>
+      <span class="script" id="menuScript">Nuestro</span>
+      <h2 id="menuTitulo">Menú</h2>
     </div>
-    <div style="text-align:center"><span class="nota-prep">⏱️ Todo se prepara al momento · tiempo aprox. <span class="tPrep"></span></span></div>
+    <div style="text-align:center"><span class="nota-prep"><span id="menuPrep">⏱️ Todo se prepara al momento · tiempo aprox.</span> <span class="tPrep"></span></span></div>
+    <div class="buscar"><input type="search" id="buscar" placeholder="🔍 Buscar producto (ej. lomo, chuleta, queso)…" aria-label="Buscar producto"></div>
     <div class="tabs" id="tabs"></div>
     <div class="grid-menu" id="grid"></div>
-    <p class="nota">🛒 Agregá productos, tocá <b>Ver pedido</b> y elegí a qué hora pasás a retirarlo · Precios en colones, sujetos a cambio.</p>
+    <p class="nota" id="menuNota">🛒 Agregá productos, tocá <b>Ver pedido</b> y elegí a qué hora pasás a retirarlo · Precios en colones, sujetos a cambio.</p>
   </div>
 </section>
 
@@ -489,12 +496,40 @@ const pedidoLink = msg => tieneWA ? waLink(msg) : telLink;
 const TODO = "Todo el menú";
 const etiquetaExtra = t => String(t).replace(/₡\s?[\d.,]+/g, "").trim() || "Extra";
 const num = t => parseInt(String(t).replace(/\D/g, ""), 10) || 0;
-const colones = n => "₡" + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const colones = n => "₡" + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-function pintarCategoria(cat){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.cat===cat));
-  const secciones = cat === TODO ? Object.values(MENU).flat() : MENU[cat];
-  document.getElementById("grid").innerHTML = secciones.map(sec=>`
+/* --- unidades: "kg" se pide por peso; "paquete"/"unid" por cantidad --- */
+const UNI = { kg: "kg", paquete: "paq.", unid: "unid." };
+const redondear = n => Math.round(n * 1000) / 1000;
+const fmtCant = (c, u) => u === "kg" ? (c < 1 ? Math.round(c * 1000) + " g" : String(redondear(c)).replace(".", ",") + " kg") : String(c);
+const precioTxt = p => typeof p.precio === "number" ? colones(p.precio) : p.precio;
+// Cada producto hereda unidad/paso/inicial de su sección si no los trae
+const PRODUCTOS = {};
+for (const [cat, secs] of Object.entries(MENU)) for (const sec of secs) for (const p of sec.platos) {
+  const unidad = p.unidad || sec.unidad || "";
+  const kg = unidad === "kg";
+  Object.assign(p, { unidad, paso: p.paso || sec.paso || (kg ? 0.5 : 1), inicial: p.inicial || sec.inicial || 1, cat });
+  PRODUCTOS[p.nombre] = p;
+}
+const MT = NEGOCIO.menu || {};
+if (MT.script) document.getElementById("menuScript").textContent = MT.script;
+if (MT.titulo) document.getElementById("menuTitulo").textContent = MT.titulo;
+if (MT.notaPrep) document.getElementById("menuPrep").textContent = MT.notaPrep;
+if (MT.nota) document.getElementById("menuNota").innerHTML = MT.nota;
+
+const sinTildes = t => String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function pintarCategoria(cat, q = ""){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", !q && t.dataset.cat===cat));
+  let secciones = cat === TODO || q ? Object.values(MENU).flat() : MENU[cat];
+  if (q) {
+    const palabras = sinTildes(q).split(/\s+/).filter(Boolean);
+    secciones = secciones.map(sec=>({...sec, platos: sec.platos.filter(p=>{
+      const t = sinTildes(p.nombre + " " + sec.titulo); return palabras.every(w=>t.includes(w));
+    })})).filter(sec=>sec.platos.length);
+  }
+  document.getElementById("grid").innerHTML = !secciones.length
+    ? `<p class="sin-res">No encontramos “${esc(q)}”. Pruebe con otra palabra o escríbanos por WhatsApp.</p>`
+    : secciones.map(sec=>`
     <div class="seccion">
       <div class="seccion-head">
         ${sec.ico?`<div class="ico" aria-hidden="true">${sec.ico}</div>`:''}
@@ -503,16 +538,16 @@ function pintarCategoria(cat){
       ${sec.sub?`<p class="sub">${sec.sub}</p>`:''}
       ${sec.platos.map(p=>`
         <div class="plato-row">
-          <div class="top"><h4>${p.nombre}</h4><span class="dots"></span><span class="precio">${p.precio}</span></div>
+          <div class="top"><h4>${p.nombre}</h4><span class="dots"></span><span class="precio">${precioTxt(p)}${UNI[p.unidad] && typeof p.precio === "number" ? `<small> / ${UNI[p.unidad]}</small>` : ""}</span></div>
           ${p.desc?`<p>${p.desc}</p>`:''}
           <div class="meta">${p.extra?`<span class="extra">${p.extra}</span>`:''}${p.sinPedido?'':`<div class="add-btns">
-            <button class="add" data-add="${esc(p.nombre)}" data-precio="${num(p.precio)}">+ Agregar</button>
+            <button class="add" data-add="${esc(p.nombre)}" data-precio="${num(p.precio)}">+ Agregar${p.unidad==="kg" ? " " + fmtCant(p.inicial,"kg") : ""}</button>
             ${p.extra?`<button class="add" data-add="${esc(p.nombre+" "+etiquetaExtra(p.extra).toLowerCase())}" data-precio="${num(p.extra)}">+ ${esc(etiquetaExtra(p.extra))}</button>`:''}
           </div>`}</div>
         </div>`).join("")}
     </div>`).join("");
   document.querySelectorAll("#grid .add").forEach(b=>b.onclick=()=>{
-    agregar(b.dataset.add, +b.dataset.precio);
+    agregar(b.dataset.add, +b.dataset.precio, PRODUCTOS[b.dataset.add]);
     b.classList.add("ok"); const t=b.textContent; b.textContent="✓ Agregado";
     setTimeout(()=>{b.classList.remove("ok"); b.textContent=t;}, 900);
   });
@@ -520,8 +555,11 @@ function pintarCategoria(cat){
 
 const cats = [TODO, ...Object.keys(MENU)];
 document.getElementById("tabs").innerHTML = cats.map(c=>`<button class="tab" data-cat="${c}">${c}</button>`).join("");
-document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>pintarCategoria(t.dataset.cat));
-pintarCategoria(TODO);
+let catActual = Object.keys(MENU)[0];
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{ catActual = t.dataset.cat; $b.value = ""; pintarCategoria(catActual); });
+const $b = document.getElementById("buscar");
+$b.addEventListener("input", ()=>pintarCategoria(catActual, $b.value.trim()));
+pintarCategoria(catActual);
 
 // Botones "Armar pedido": llevan al menú (no abren un chat vacío).
 document.querySelectorAll("[data-armar]").forEach(a=>a.onclick=e=>{
@@ -548,19 +586,26 @@ try { carrito = JSON.parse(localStorage.getItem(CAR_KEY)) || []; } catch (e) { c
 const guardarCar = () => { try { localStorage.setItem(CAR_KEY, JSON.stringify(carrito)); } catch (e) {} };
 const $c = id => document.getElementById(id);
 const totalCar = () => carrito.reduce((s,i)=>s+i.precio*i.cant,0);
-const cantCar = () => carrito.reduce((s,i)=>s+i.cant,0);
+const cantCar = () => carrito.length;   // productos distintos (los de kilo cuentan 1)
+carrito = carrito.filter(i=>i && i.nombre && i.precio >= 0 && i.cant > 0).map(i=>({paso:1, unidad:"", ...i}));
+const hayKg = () => carrito.some(i=>i.unidad==="kg");
 
 
 function avisar(m){ const t=$c("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(avisar.t); avisar.t=setTimeout(()=>t.classList.remove("show"),2200); }
 
-function agregar(nombre, precio){
+function agregar(nombre, precio, prod = {}){
+  const unidad = prod.unidad || "", paso = prod.paso || 1, inicial = unidad === "kg" ? (prod.inicial || 1) : 1;
   const it = carrito.find(i=>i.nombre===nombre);
-  if (it) it.cant++; else carrito.push({nombre, precio, cant:1});
-  guardarCar(); pintarCarrito(); avisar(`✓ ${nombre} agregado`);
+  if (it) it.cant = redondear(it.cant + (it.unidad==="kg" ? it.paso : 1));
+  else carrito.push({nombre, precio, cant:inicial, unidad, paso});
+  guardarCar(); pintarCarrito();
+  const c = carrito.find(i=>i.nombre===nombre);
+  avisar(`✓ ${nombre} agregado` + (c.unidad==="kg" ? ` · ${fmtCant(c.cant,"kg")}` : ""));
 }
 function cambiar(idx, d){
-  carrito[idx].cant += d;
-  if (carrito[idx].cant <= 0) carrito.splice(idx,1);
+  const it = carrito[idx];
+  it.cant = redondear(it.cant + d * (it.unidad==="kg" ? it.paso : 1));
+  if (it.cant <= 0.0001) carrito.splice(idx,1);
   guardarCar(); pintarCarrito();
 }
 function pintarCarrito(){
@@ -568,12 +613,13 @@ function pintarCarrito(){
   $c("carCnt").textContent = n; $c("carFabTotal").textContent = tot;
   $c("carFab").classList.toggle("show", n>0);
   $c("carTotal").textContent = tot; $c("carTotal2").textContent = tot;
+  document.querySelectorAll(".car-total span:first-child").forEach(el=>el.textContent = hayKg() ? "Total aprox." : "Total");
   $c("carFoot").style.display = n ? "" : "none";
   $c("carLista").innerHTML = n ? carrito.map((i,k)=>`
     <div class="car-item">
-      <div class="info"><b>${esc(i.nombre)}</b><small>${colones(i.precio)} c/u</small></div>
-      <div class="qty"><button data-k="${k}" data-d="-1" aria-label="Quitar uno">−</button><span>${i.cant}</span><button data-k="${k}" data-d="1" aria-label="Agregar uno">+</button></div>
-      <div class="sub">${colones(i.precio*i.cant)}</div>
+      <div class="info"><b>${esc(i.nombre)}</b><small>${colones(i.precio)} ${i.unidad==="kg" ? "el kilo" : i.unidad==="paquete" ? "c/paquete" : "c/u"}</small></div>
+      <div class="qty"><button data-k="${k}" data-d="-1" aria-label="Quitar">−</button><span>${fmtCant(i.cant,i.unidad)}</span><button data-k="${k}" data-d="1" aria-label="Agregar">+</button></div>
+      <div class="sub">${i.unidad==="kg"?"≈ ":""}${colones(i.precio*i.cant)}</div>
     </div>`).join("") : `<div class="car-vacio"><div>🛒</div>Tu pedido está vacío.<br>Agregá productos desde el menú.</div>`;
   $c("carLista").querySelectorAll(".qty button").forEach(b=>b.onclick=()=>cambiar(+b.dataset.k, +b.dataset.d));
   if (!n) paso(1);
@@ -610,9 +656,11 @@ function horaRetiro(){   // devuelve {fecha, texto} o {error}
 function armarMensaje(){
   const nombre = $c("pNombre").value.trim().replace(/\s+/g," ");
   const nota = $c("pNota").value.trim();
-  const lineas = carrito.map(i=>`• ${i.cant} x ${i.nombre} — ${colones(i.precio*i.cant)}`);
+  const lineas = carrito.map(i=>i.unidad==="kg"
+    ? `• ${fmtCant(i.cant,"kg")} de ${i.nombre} — ${colones(i.precio*i.cant)} aprox.`
+    : `• ${i.cant} x ${i.nombre}${i.unidad==="paquete" ? (i.cant>1?" (paquetes)":" (paquete)") : ""} — ${colones(i.precio*i.cant)}`);
   const r = horaRetiro();
-  const msg = `Hola ${NEGOCIO.nombreCorto}, quiero hacer un pedido para retirar 🛒\n\n*A nombre de:* ${nombre}\n*Paso a retirarlo:* ${r.texto || "-"}\n\n${lineas.join("\n")}\n\n*Total: ${colones(totalCar())}*` + (nota ? `\n\n*Nota:* ${nota}` : "") + `\n\nNo hace falta confirmar, paso a la hora indicada. ¡Gracias!`;
+  const msg = `Hola ${NEGOCIO.nombreCorto}, quiero hacer un pedido para retirar 🛒\n\n*A nombre de:* ${nombre}\n*Paso a retirarlo:* ${r.texto || "-"}\n\n${lineas.join("\n")}\n\n*Total${hayKg()?" aprox.":""}: ${colones(totalCar())}*` + (hayKg() ? `\n_(lo que va por kilo se cobra según el peso exacto)_` : "") + (nota ? `\n\n*Nota:* ${nota}` : "") + `\n\nNo hace falta confirmar, paso a la hora indicada. ¡Gracias!`;
   $c("btnEnviar").href = waLink(msg);
 }
 
