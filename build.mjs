@@ -39,6 +39,7 @@ if (pendientes) avisos.push(`Hay ${pendientes.length} dato(s) "Por confirmar" en
 const anios = NEGOCIO.fundado ? new Date().getFullYear() - NEGOCIO.fundado : "";
 const vars = {
   ...NEGOCIO,
+  version: Date.now().toString(36),   // evita que el navegador use negocio.js viejo tras un cambio
   config: CONFIG,
   lealtad: { qr: false, qrMinutos: 3, esperaMinutos: 120, ...LEALTAD },
   telefono1: CONFIG.telefonos[0],

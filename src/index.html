@@ -571,7 +571,7 @@
 
 
 <script type="module">
-import * as N from "./negocio.js";
+import * as N from "./negocio.js?v={{version}}";
 const { NEGOCIO, CONFIG, MENU } = N;
 
 /* ====================== lógica ====================== */
@@ -844,6 +844,6 @@ if (G && $g("granja")) {
 
 document.querySelectorAll("#links a").forEach(a=>a.onclick=()=>document.getElementById("links").classList.remove("open"));
 </script>
-<!--@tarjeta--><script type="module" src="tarjeta.js"></script><!--/@tarjeta-->
+<!--@tarjeta--><script type="module" src="tarjeta.js?v={{version}}"></script><!--/@tarjeta-->
 </body>
 </html>

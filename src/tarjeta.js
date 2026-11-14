@@ -8,8 +8,8 @@ import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp, writeBa
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
-import { firebaseConfig, LEALTAD, APP_CHECK_SITE_KEY } from "./firebase-config.js";
-import { NEGOCIO } from "./negocio.js";
+import { firebaseConfig, LEALTAD, APP_CHECK_SITE_KEY } from "./firebase-config.js?v={{version}}";
+import { NEGOCIO } from "./negocio.js?v={{version}}";
 
 const $ = id => document.getElementById(id);
 const KEY = NEGOCIO.id + "_tel";

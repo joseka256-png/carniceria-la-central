@@ -215,7 +215,7 @@
 </div>
 
 <script type="module">
-import * as N from "./negocio.js";
+import * as N from "./negocio.js?v={{version}}";
 const { NEGOCIO, CONFIG, GRANJA: G } = N;
 const $ = id => document.getElementById(id);
 const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
