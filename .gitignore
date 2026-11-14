@@ -9,3 +9,7 @@ soporte/node_modules/
 soporte/clave-servicio*.json
 *-service-account*.json
 .DS_Store
+
+# Contratos generados y datos privados
+contrato/salida/
+contrato/datos.local.js

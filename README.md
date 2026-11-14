@@ -74,3 +74,12 @@ Las mejoras (diseño, carrito, panel) se hacen en `src/` de **esta plantilla**. 
 - Cuando completa `LEALTAD.meta` sellos, aparece **Canjear premio** y la tarjeta vuelve a 0.
 - Solo los usuarios en `staff/{uid}` pueden sumar sellos, canjear, ver el historial y listar clientes. El historial no se puede editar ni borrar.
 - La meta de sellos se copia sola a `firestore.rules` en cada build. Si se cambia, ejecutar `npm run reglas`.
+
+## Contrato anual (por cliente)
+
+`npm run contrato` arma `contrato/salida/contrato-<id>.html` con el logo, los colores y los módulos del cliente (de `negocio.js`) y los datos del plan (`contrato/datos.js`). Abrirlo en Chrome → Imprimir → Guardar como PDF (con "Gráficos de fondo").
+
+- Lo que se deja `""` en `datos.js` sale como línea en blanco para llenar a mano.
+- Con `inicio: "2026-12-01"` se calculan solas las 12 fechas de pago y la fecha de fin.
+- **El repo es público:** cédulas, IBAN y SINPE van en `contrato/datos.local.js` (copia de `datos.js`, ignorada por Git), nunca en `datos.js`.
+- La carpeta `contrato/` no se publica en el sitio (el build solo publica `dist/`).
