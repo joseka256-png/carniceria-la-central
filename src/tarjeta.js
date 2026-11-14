@@ -40,7 +40,7 @@ function avisoQR(texto, tipo = "ok") {
   const a = $("qrAviso"); a.textContent = texto; a.className = "qr-aviso show" + (tipo === "err" ? " err" : "");
 }
 if (qrPendiente) {
-  avisoQR(leerTel() ? "Sumando tu sello…" : "📱 Tenés un sello por sumar. Escribí tu teléfono para ver o crear tu tarjeta.");
+  avisoQR(leerTel() ? "Sumando tu sello…" : "Tenés un sello por sumar. Escribí tu teléfono para ver o crear tu tarjeta.");
   setTimeout(() => document.getElementById("tarjeta").scrollIntoView({ behavior: "smooth" }), 300);
 }
 const minutosTexto = m => m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? " " + (m % 60) + " min" : ""}` : `${m} min`;

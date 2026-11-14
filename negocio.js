@@ -32,13 +32,13 @@ export const NEGOCIO = {
   },
 
   hero: {
-    etiqueta: "🥩 Más de 75 años a su servicio",
+    etiqueta: "Más de 75 años a su servicio",
     tituloScript: "Carne fresca",
     titulo: "de toda la vida.",
     texto: "Cortes de res, cerdo y pollo preparados a su gusto, con la confianza de más de 75 años. Arme su pedido, elija la hora y páselo a recoger.",
     imagen: "img/portada-temporal.jpg",       // PENDIENTE: foto del local o del mostrador
     imagenAlt: "Carnicería La Central",
-    badges: [["🥩", "Cortes a su gusto"], ["⭐", "Tarjeta de cliente frecuente"]]
+    badges: [["beef", "Cortes a su gusto"], ["award", "Tarjeta de cliente frecuente"]]   // ícono + texto (ver src/iconos.js)
   },
 
   historia: {
@@ -49,18 +49,18 @@ export const NEGOCIO = {
       "Seleccionamos cada corte y lo preparamos a su gusto. Pregúntenos por los cortes especiales para su parrillada o su almuerzo familiar."
     ],
     imagenes: [],                   // PENDIENTE: 2 fotos del local [["img/archivo.jpg","descripción"], …]
-    stats: [["75+", "Años de servicio"], ["100%", "Carne fresca"], ["⭐", "Cliente frecuente"]]
+    stats: [["75+", "Años de servicio"], ["100%", "Carne fresca"], ["ico:award", "Cliente frecuente"]]
   },
 
   // Textos de la sección de productos (opcionales)
   menu: {
     script: "Nuestros",
     titulo: "Productos",
-    notaPrep: "🔪 Cortado al momento · listo en",
-    nota: "🛒 Agregue productos, toque <b>Ver pedido</b> y elija a qué hora pasa a retirarlo · Precios en colones con IVA, sujetos a cambio. Los productos por kilo se cobran según el peso exacto."
+    notaPrep: "Cortado al momento · listo en",
+    nota: "Agregue productos, toque <b>Ver pedido</b> y elija a qué hora pasa a retirarlo · Precios en colones con IVA, sujetos a cambio. Los productos por kilo se cobran según el peso exacto."
   },
 
-  cta: { titulo: "¿Ya sabe qué va a llevar? 🥩", texto: "Arme su pedido y páselo a recoger a la hora que elija." }
+  cta: { titulo: "¿Ya sabe qué va a llevar?", texto: "Arme su pedido y páselo a recoger a la hora que elija." }
 };
 
 // =========================================================
@@ -78,7 +78,7 @@ export const NEGOCIO = {
 export const PROMOS = [
   // EJEMPLOS — cambiar por las promociones reales del cliente
   { imagen: "img/granja/engorde.jpg", alt: "Cerdos de nuestra granja",
-    titulo: "Para sus fiestas, cerdo de nuestra granja 🎄",
+    titulo: "Para sus fiestas, cerdo de nuestra granja",
     texto: "Lomo, posta, costilla y chuleta frescos. Haga su pedido con tiempo y páselo a recoger.",
     boton: ["Ver cortes de cerdo", "?cat=Cerdo#menu"], hasta: "2026-12-31" },
   { imagen: "img/granja/lechones.jpg", alt: "Lechones en la granja Cosecha Porcina",
@@ -86,7 +86,7 @@ export const PROMOS = [
     texto: "Criamos los cerdos y el ganado que llegan a nuestro mostrador.",
     boton: ["Conocé la granja", "granja.html"] },
   { imagen: "img/granja/terneros.jpg", alt: "Terneros de nuestra finca",
-    titulo: "Tarjeta de cliente frecuente ⭐",
+    titulo: "Tarjeta de cliente frecuente",
     texto: "Cada compra de ₡10.000 o más le suma un sello.",
     boton: ["Sacar mi tarjeta", "#tarjeta"] }
 ];
@@ -99,6 +99,7 @@ export const MODULOS = {
 export const CONFIG = {
   whatsapp: "50683217253",
   telefonos: ["2551-1705"],
+  correo: "cosechaporcina.sa@gmail.com",     // se muestra en el sitio y se usa como correo del panel
   tiempoPrep: "15–30 min",
   retiroOpciones: [30, 45, 60],
   retiroMinimo: 30,
@@ -109,7 +110,7 @@ export const CONFIG = {
     ["Lunes a sábado", "Por confirmar"],
     ["Domingo", "Por confirmar"]
   ],
-  pagos: ["💵 Efectivo", "📱 SINPE Móvil", "💳 Tarjeta"]   // PENDIENTE: confirmar
+  pagos: ["Efectivo", "SINPE Móvil", "Tarjeta"]   // PENDIENTE: confirmar
 };
 
 /* =========================================================
@@ -125,7 +126,7 @@ const FIAMBRE = { unidad: "kg", paso: 0.25, opciones: [0.25, 0.5] };   // embuti
 
 export const MENU = {
   "Res": [
-    { titulo: "Res", ico: "🥩", sub: "De nuestra propia granja, Cosecha Porcina · precios por kilo", ...KG, platos: [
+    { titulo: "Res", ico: "beef", sub: "De nuestra propia granja, Cosecha Porcina · precios por kilo", ...KG, platos: [
       { nombre: "Lomito", precio: 12500 },
       { nombre: "Lomo", precio: 7800 },
       { nombre: "T-bone", precio: 8000 },
@@ -153,7 +154,7 @@ export const MENU = {
     ]}
   ],
   "Cerdo": [
-    { titulo: "Cerdo", ico: "🐖", sub: "De nuestra propia granja, Cosecha Porcina · precios por kilo", ...KG, platos: [
+    { titulo: "Cerdo", ico: "ham", sub: "De nuestra propia granja, Cosecha Porcina · precios por kilo", ...KG, platos: [
       { nombre: "Lomo de cerdo", precio: 5800 },
       { nombre: "Lomito de cerdo", precio: 5200 },
       { nombre: "Posta de cerdo", precio: 4000 },
@@ -165,13 +166,13 @@ export const MENU = {
       { nombre: "Manteca", precio: 1800 },
       { nombre: "Pezuña", precio: 1000 }
     ]},
-    { titulo: "Ahumados La Central", ico: "🔥", sub: "De la casa · precios por kilo", ...KG, platos: [
+    { titulo: "Ahumados La Central", ico: "flame", sub: "De la casa · precios por kilo", ...KG, platos: [
       { nombre: "Chuleta ahumada", precio: 5400 },
       { nombre: "Costilla ahumada", precio: 7000 }
     ]}
   ],
   "Pollo": [
-    { titulo: "Pollo", ico: "🍗", sub: "Precios por kilo", ...KG, platos: [
+    { titulo: "Pollo", ico: "drumstick", sub: "Precios por kilo", ...KG, platos: [
       { nombre: "Pollo entero", precio: 2800 },
       { nombre: "Pechuga", precio: 3500 },
       { nombre: "Muslo", precio: 2500 },
@@ -182,13 +183,13 @@ export const MENU = {
     ]}
   ],
   "Pescado": [
-    { titulo: "Pescado", ico: "🐟", sub: "Precios por kilo", ...KG, platos: [
+    { titulo: "Pescado", ico: "fish", sub: "Precios por kilo", ...KG, platos: [
       { nombre: "Tilapia", precio: 6800 },
       { nombre: "Corvina", precio: 3500 }
     ]}
   ],
   "Embutidos": [
-    { titulo: "Zar", ico: "🥓", platos: [
+    { titulo: "Zar", ico: "sandwich", platos: [
       { nombre: "Tocineta ahumada Zar", precio: 13000, ...FIAMBRE },
       { nombre: "Salame Zar", precio: 15000, ...FIAMBRE },
       { nombre: "Jamón Span Zar", precio: 13000, ...FIAMBRE },
@@ -196,20 +197,20 @@ export const MENU = {
       { nombre: "Salchichas de desayuno Zar", precio: 3200, unidad: "paquete" },
       { nombre: "Pepperoni Zar", precio: 1800, unidad: "paquete" }
     ]},
-    { titulo: "Zurquí", ico: "🥪", platos: [
+    { titulo: "Zurquí", ico: "sandwich", platos: [
       { nombre: "Jamón Zurquí", precio: 7000, ...FIAMBRE },
       { nombre: "Jamonada Zurquí", precio: 5800, ...FIAMBRE },
       { nombre: "Salchicha Zurquí", precio: 1800, unidad: "paquete" },
       { nombre: "Mortadela con chile Zurquí", precio: 3000, unidad: "unid" },
       { nombre: "Mortadela de pollo Zurquí", precio: 3000, unidad: "unid" }
     ]},
-    { titulo: "Fud", ico: "🦃", platos: [
+    { titulo: "Fud", ico: "sandwich", platos: [
       { nombre: "Jamón de pavo ahumado Fud", precio: 12000, ...FIAMBRE },
       { nombre: "Jamón Span Fud", precio: 11000, ...FIAMBRE },
       { nombre: "Pechuga de pavo Fud", precio: 12000, ...FIAMBRE },
       { nombre: "Salchicha de pavo pequeña Fud", precio: 1800, unidad: "paquete" }
     ]},
-    { titulo: "Don Luis", ico: "🌭", unidad: "unid", platos: [
+    { titulo: "Don Luis", ico: "sandwich", unidad: "unid", platos: [
       { nombre: "Salchichas Don Luis", precio: 2800, unidad: "paquete" },
       { nombre: "Salchichas de pollo Don Luis", precio: 2800, unidad: "paquete" },
       { nombre: "Jamón Don Luis", precio: 2800, unidad: "paquete" },
@@ -219,13 +220,13 @@ export const MENU = {
       { nombre: "Salchichón rueda Don Luis", precio: 1600 },
       { nombre: "Combo Don Luis", precio: 3800 }
     ]},
-    { titulo: "La Única", ico: "🌭", unidad: "unid", platos: [
+    { titulo: "La Única", ico: "sandwich", unidad: "unid", platos: [
       { nombre: "Salchichón La Única", precio: 2200 },
       { nombre: "Mortadela La Única", precio: 2200 },
       { nombre: "Salchichón jamonado La Única", precio: 2500 },
       { nombre: "Cantones La Única", precio: 3000 }
     ]},
-    { titulo: "Tucurrique", ico: "🌭", unidad: "unid", platos: [
+    { titulo: "Tucurrique", ico: "sandwich", unidad: "unid", platos: [
       { nombre: "Salchichón carnicero", precio: 2500 },
       { nombre: "Salchichón de pejibaye", precio: 2500 },
       { nombre: "Salchichón parrillero", precio: 3500 },
@@ -238,14 +239,14 @@ export const MENU = {
       { nombre: "Pepperoni Tucurrique", precio: 1000, unidad: "paquete" },
       { nombre: "Salame Tucurrique", precio: 1000, unidad: "paquete" }
     ]},
-    { titulo: "Cinta Azul y otros", ico: "🌭", unidad: "unid", platos: [
+    { titulo: "Cinta Azul y otros", ico: "sandwich", unidad: "unid", platos: [
       { nombre: "Mortadela sin grasa Cinta Azul", precio: 3000 },
       { nombre: "Mortadela con chile Cinta Azul", precio: 3000 },
       { nombre: "Salchichón keto", precio: 2850 }
     ]}
   ],
   "Lácteos": [
-    { titulo: "Lácteos", ico: "🧀", platos: [
+    { titulo: "Lácteos", ico: "milk", platos: [
       { nombre: "Queso fresco", precio: 3800, unidad: "kg" },
       { nombre: "Queso semiduro", precio: 4400, unidad: "kg" },
       { nombre: "Queso maduro", precio: 5900, unidad: "kg" },
@@ -258,7 +259,7 @@ export const MENU = {
     ]}
   ],
   "Otros": [
-    { titulo: "Productos Don Raúl", ico: "🫙", unidad: "unid", platos: [
+    { titulo: "Productos Don Raúl", ico: "package", unidad: "unid", platos: [
       { nombre: "Palmito", precio: 1500 },
       { nombre: "Pejibaye", precio: 1600 },
       { nombre: "Chiles rellenos", precio: 1800 },
@@ -266,12 +267,12 @@ export const MENU = {
       { nombre: "Palmito en tarro entero", precio: 1800 },
       { nombre: "Palmito en tarro picado", precio: 1500 }
     ]},
-    { titulo: "Vegetales", ico: "🥦", unidad: "paquete", platos: [
+    { titulo: "Vegetales", ico: "carrot", unidad: "paquete", platos: [
       { nombre: "Zanahoria con vainica", precio: 1500 },
       { nombre: "Ensalada", precio: 1500 },
       { nombre: "Mixto (brócoli)", precio: 1500 }
     ]},
-    { titulo: "Para la parrilla", ico: "🔥", platos: [
+    { titulo: "Para la parrilla", ico: "flame", platos: [
       { nombre: "Carbón", precio: 1400, unidad: "paquete" },
       { nombre: "Salsa de chile chipotle", precio: 2000, unidad: "unid" }
     ]}
@@ -303,16 +304,16 @@ export const GRANJA = {
     [F + "biodigestor-biogas.jpg", "Biodigestor que produce biogás"]
   ],
   pilares: [
-    ["🐖", "Producción propia", "Criamos los cerdos y el ganado que llegan a nuestro mostrador: carne fresca, sin intermediarios."],
-    ["❤️", "Bienestar animal", "Cada decisión en la granja se toma pensando primero en el bienestar de nuestros animales."],
-    ["⚡", "Biogás", "Los desechos de los cerdos y la boñiga del ganado se convierten en biogás, una energía renovable."],
-    ["🤝", "Nuestra gente", "A lo largo de nuestra historia hemos dado empleo a más de 40 colaboradores de la zona."]
+    ["tractor", "Producción propia", "Criamos los cerdos y el ganado que llegan a nuestro mostrador: carne fresca, sin intermediarios."],
+    ["heart-handshake", "Bienestar animal", "Cada decisión en la granja se toma pensando primero en el bienestar de nuestros animales."],
+    ["zap", "Biogás", "Los desechos de los cerdos y la boñiga del ganado se convierten en biogás, una energía renovable."],
+    ["users", "Nuestra gente", "A lo largo de nuestra historia hemos dado empleo a más de 40 colaboradores de la zona."]
   ],
 
   // Página completa (granja.html): bloques de texto + fotos, en orden
   hero: F + "engorde.jpg",
   bloques: [
-    { id: "cerdos", ico: "🐖", titulo: "Nuestros cerdos",
+    { id: "cerdos", ico: "piggy-bank", titulo: "Nuestros cerdos",
       texto: [
         "Acompañamos a cada animal en todas sus etapas: desde la maternidad, donde las cerdas cuidan a sus lechones, hasta los corrales de crecimiento y engorde.",
         "Trabajamos con instalaciones techadas y ventiladas, pisos adecuados para cada etapa, comederos y agua siempre disponibles, y personal que los atiende todos los días."
@@ -325,7 +326,7 @@ export const GRANJA = {
         [F + "engorde.jpg", "Corrales de engorde"],
         [F + "corrales.jpg", "Personal atendiendo a los cerdos"]
       ]},
-    { id: "ganado", ico: "🐄", titulo: "Nuestro ganado",
+    { id: "ganado", ico: "fence", titulo: "Nuestro ganado",
       texto: [
         "Además de cerdos, criamos ganado para la carnicería. Los animales crecen en corrales amplios, con buena alimentación y cuidado diario.",
         "Así podemos ofrecer en el mostrador carne de res que conocemos desde su origen."
@@ -336,23 +337,23 @@ export const GRANJA = {
         [F + "ganado-comedero.jpg", "Ganado en el comedero"],
         [F + "ganado-comiendo.jpg", "Ganado alimentándose"]
       ]},
-    { id: "biogas", ico: "⚡", titulo: "Energía que sale de la granja", oscuro: true,
+    { id: "biogas", ico: "zap", titulo: "Energía que sale de la granja", oscuro: true,
       texto: [
         "Nada se desperdicia. Los desechos de los cerdos y la boñiga del ganado van a biodigestores, donde se descomponen sin oxígeno y producen biogás: un gas natural y renovable.",
         "Lo que queda del proceso se trata en lagunas y se aprovecha como abono para los pastos, con análisis de suelos y criterios técnicos, sin contaminar los ríos y quebradas cercanos."
       ],
       pasos: [
-        ["🐖🐄", "Desechos", "Excremento de cerdo y boñiga"],
-        ["🫧", "Biodigestor", "Se descomponen sin oxígeno"],
-        ["⚡", "Biogás", "Gas natural renovable"],
-        ["🌱", "Abono", "El efluente nutre los pastos"]
+        ["recycle", "Desechos", "Excremento de cerdo y boñiga"],
+        ["cylinder", "Biodigestor", "Se descomponen sin oxígeno"],
+        ["flame", "Biogás", "Gas natural renovable"],
+        ["sprout", "Abono", "El efluente nutre los pastos"]
       ],
       fotos: [
         [F + "biodigestor-biogas.jpg", "Biodigestor inflado con biogás"],
         [F + "laguna-tratamiento.jpg", "Laguna del sistema de tratamiento"],
         [F + "vista-aerea.jpg", "Vista aérea de la granja y su sistema de tratamiento"]
       ]},
-    { id: "equipo", ico: "🤝", titulo: "Nuestra gente",
+    { id: "equipo", ico: "users", titulo: "Nuestra gente",
       texto: [
         "Detrás de cada corte hay un equipo de la zona que trabaja todos los días en la granja. A lo largo de nuestra historia hemos empleado a más de 40 colaboradores locales.",
         "Buscamos crear un entorno amigable y justo para nuestros colaboradores, nuestra comunidad y nuestro entorno en general."

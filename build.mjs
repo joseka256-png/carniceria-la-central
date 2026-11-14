@@ -18,6 +18,7 @@ const CI = !!process.env.CI;
 
 const N = await import(pathToFileURL(join(RAIZ, "negocio.js")).href + "?t=" + Date.now());
 const { NEGOCIO, MODULOS = {}, CONFIG, LEALTAD, FIREBASE } = N;
+const { icono } = await import(pathToFileURL(join(SRC, "iconos.js")).href);
 
 const errores = [], avisos = [];
 const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -40,12 +41,12 @@ const anios = NEGOCIO.fundado ? new Date().getFullYear() - NEGOCIO.fundado : "";
 const vars = {
   ...NEGOCIO,
   version: Date.now().toString(36),   // evita que el navegador use negocio.js viejo tras un cambio
-  config: CONFIG,
+  config: { correo: "", ...CONFIG },
   lealtad: { qr: false, qrMinutos: 3, esperaMinutos: 120, ...LEALTAD },
   telefono1: CONFIG.telefonos[0],
   telefonosTexto: CONFIG.telefonos.join(" · "),
   badgesHtml: (NEGOCIO.hero.badges || []).map(([ico, txt], i) =>
-    `<div class="badge b${i + 1}"><span>${esc(ico)}</span> ${esc(txt)}</div>`).join("\n      "),
+    `<div class="badge b${i + 1}"><span>${icono(ico) || esc(ico)}</span> ${esc(txt)}</div>`).join("\n      "),
   historiaImgsHtml: (NEGOCIO.historia.imagenes || []).map(([src, alt]) =>
     `<img src="${esc(src)}" alt="${esc(alt)}">`).join("\n      "),
   montoTexto: LEALTAD ? "₡" + Number(LEALTAD.montoMinimo).toLocaleString("es-CR").replace(/\s|,/g, ".") : "",
@@ -56,13 +57,15 @@ const vars = {
   historiaParrafosHtml: (NEGOCIO.historia.parrafos || []).map(p => `<p>${esc(p)}</p>`).join("\n      "),
   statsHtml: (NEGOCIO.historia.stats || []).map(([v, e]) => v === "{anios}"
     ? `<div><b class="anios">${anios}</b><small>${esc(e)}</small></div>`
-    : `<div><b>${esc(v)}</b><small>${esc(e)}</small></div>`).join("\n        ")
+    : `<div><b>${String(v).startsWith("ico:") ? icono(v.slice(4)) : esc(v)}</b><small>${esc(e)}</small></div>`).join("\n        ")
 };
 const obtener = ruta => ruta.split(".").reduce((o, k) => o?.[k], vars);
 
 function render(texto, archivo) {
   // módulos apagados
   texto = texto.replace(/<!--@(\w+)-->([\s\S]*?)<!--\/@\1-->/g, (_, m, cuerpo) => MODULOS[m] ? cuerpo : "");
+  // íconos:  [[ico:nombre]]  → SVG en línea (src/iconos.js)
+  texto = texto.replace(/\[\[ico:([\w-]+)\]\]/g, (_, n) => icono(n) || (errores.push(`${archivo}: no existe el ícono "${n}"`), ""));
   texto = texto.replace(/\{\{\{([\w.]+)\}\}\}/g, (_, r) => {
     const v = obtener(r); if (v === undefined) errores.push(`${archivo}: falta el bloque {{{${r}}}}`); return v ?? "";
   });

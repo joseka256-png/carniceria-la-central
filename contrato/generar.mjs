@@ -16,6 +16,7 @@ const N = await imp(join(RAIZ, "negocio.js"));
 const D = await imp(existsSync(join(AQUI, "datos.local.js")) ? join(AQUI, "datos.local.js") : join(AQUI, "datos.js"));
 const { NEGOCIO, MODULOS = {}, CONFIG, LEALTAD, MENU = {}, GRANJA, PROMOS } = N;
 const { PROVEEDOR: P, CONTRATO: C } = D;
+const { icono } = await imp(join(RAIZ, "src", "iconos.js"));
 
 // ---------- utilidades ----------
 const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -46,12 +47,12 @@ const total = C.mensualidad !== "" ? C.mensualidad * 12 + (+C.arranque || 0) : "
 // ---------- qué incluye (según los módulos activos del sitio) ----------
 const nProductos = Object.values(MENU).flat().reduce((s, sec) => s + (sec.platos?.length || 0), 0);
 const incluye = [
-  ["🌐", "Sitio web completo", `Página de ${esc(NEGOCIO.nombre)} adaptada a celular y computadora, con su logo, colores, historia, horario, mapa y formas de pago.`],
-  nProductos && ["🛒", "Catálogo y carrito de pedidos", `Catálogo de ${nProductos} productos con precios, buscador y carrito. Los clientes arman el pedido (por kilo o por unidad), eligen la hora de retiro y lo envían por WhatsApp.`],
-  MODULOS.tarjeta && ["⭐", "Tarjeta de cliente frecuente", `Tarjeta digital de sellos${LEALTAD?.qr ? " con código QR de un solo uso" : ""}, panel para el personal e historial de compras protegido.`],
-  PROMOS && ["🎄", "Slider de promociones", "Espacio para promociones de temporada (Navidad, ofertas, eventos) que se muestran y se ocultan solas por fecha."],
-  MODULOS.granja && GRANJA && ["🐖", `Página ${esc(GRANJA.nombre)}`, "Sección propia con galería de fotos, historia y compromiso ambiental de la granja."],
-  ["🔒", "Dominio, hosting y seguridad", "Dominio propio (.com o .cr), hospedaje en servidores de Google (Firebase) y certificado de seguridad (https) siempre activo."]
+  ["store", "Sitio web completo", `Página de ${esc(NEGOCIO.nombre)} adaptada a celular y computadora, con su logo, colores, historia, horario, mapa y formas de pago.`],
+  nProductos && ["shopping-cart", "Catálogo y carrito de pedidos", `Catálogo de ${nProductos} productos con precios, buscador y carrito. Los clientes arman el pedido (por kilo o por unidad), eligen la hora de retiro y lo envían por WhatsApp.`],
+  MODULOS.tarjeta && ["award", "Tarjeta de cliente frecuente", `Tarjeta digital de sellos${LEALTAD?.qr ? " con código QR de un solo uso" : ""}, panel para el personal e historial de compras protegido.`],
+  PROMOS && ["gift", "Slider de promociones", "Espacio para promociones de temporada (Navidad, ofertas, eventos) que se muestran y se ocultan solas por fecha."],
+  MODULOS.granja && GRANJA && ["piggy-bank", `Página ${esc(GRANJA.nombre)}`, "Sección propia con galería de fotos, historia y compromiso ambiental de la granja."],
+  ["credit-card", "Dominio, hosting y seguridad", "Dominio propio (.com o .cr), hospedaje en servidores de Google (Firebase) y certificado de seguridad (https) siempre activo."]
 ].filter(Boolean);
 
 const cambios = C.cambiosMes === "ilimitados" ? "cambios ilimitados" : `hasta ${C.cambiosMes} cambios`;
@@ -78,7 +79,7 @@ const cl = [];
 const clausula = (titulo, cuerpo) => cl.push({ titulo, cuerpo });
 
 clausula("Objeto", `<p>EL PROVEEDOR pone a disposición de EL CLIENTE, en modalidad de <b>alquiler mensual</b>, un sitio web para <b>${esc(NEGOCIO.nombre)}</b>, junto con su dominio, hospedaje, mantenimiento y soporte técnico, según se detalla en este contrato. No se trata de una venta del sitio: EL CLIENTE paga por el uso del servicio mientras el contrato esté vigente.</p>`);
-clausula("Servicio incluido", `<div class="incluye">${incluye.map(([i, t, d]) => `<div class="item"><span class="ic">${i}</span><div><b>${t}</b><p>${d}</p></div></div>`).join("")}</div>`);
+clausula("Servicio incluido", `<div class="incluye">${incluye.map(([i, t, d]) => `<div class="item"><span class="ic">${icono(i)}</span><div><b>${t}</b><p>${d}</p></div></div>`).join("")}</div>`);
 clausula("Soporte mensual", `<p>Durante la vigencia del contrato, EL PROVEEDOR brindará cada mes:</p><ul class="check">${soporte.map(([t, d]) => `<li><b>${t}.</b> ${d}</li>`).join("")}</ul><p class="nota">Los cambios no usados en un mes no se acumulan para el siguiente.</p>`);
 clausula("Lo que no incluye", `<ul class="cruz">${noIncluye.map(t => `<li>${t}</li>`).join("")}</ul>`);
 clausula("Plazo y renovación", `<p>Este contrato tiene una duración de <b>doce (12) meses</b>, del <b>${linea(fecha(C.inicio), 150)}</b> al <b>${linea(fecha(fin), 150)}</b>. Se renovará automáticamente por periodos iguales, salvo que alguna de las partes avise por escrito que no desea renovarlo con al menos <b>${C.diasAvisoRenovacion} días naturales</b> de anticipación al vencimiento. Al renovarse, EL PROVEEDOR podrá ajustar la mensualidad avisando con ${C.diasAvisoRenovacion} días de anticipación.</p>`);
@@ -162,7 +163,8 @@ const html = `<!DOCTYPE html>
   .incluye .item{width:calc(50% - 4px);display:inline-flex!important;vertical-align:top;margin:0 0 8px;font-size:10.4pt}
   .incluye .item:nth-child(odd){margin-right:8px}
   .incluye .item{display:flex;gap:10px;border:1px solid var(--bd);border-radius:12px;padding:10px 12px;break-inside:avoid}
-  .incluye .ic{font-size:16pt;line-height:1}
+  .incluye .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:color-mix(in srgb,var(--p) 10%,#fff);color:var(--p);flex-shrink:0}
+  .incluye .ic .i{width:17px;height:17px}
   .incluye p{margin:2px 0 0;font-size:9pt;color:var(--gr);text-align:left}
   .precios{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0}
   .precios div{border:1px solid var(--bd);border-radius:12px;padding:10px 12px;text-align:center}

@@ -60,14 +60,18 @@
   .intro .lema{font-family:'Parisienne',cursive;font-size:2.1rem;color:var(--naranja);line-height:1.2}
   .pilares{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .pilar{background:#fff;border:1px solid var(--borde);border-radius:20px;padding:20px}
-  .pilar .ic{font-size:1.7rem}
+  .i{width:1.15em;height:1.15em;vertical-align:-.22em;flex-shrink:0}
+  .pilar .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--primario) 10%,#fff);color:var(--primario)}
+  .pilar .ic .i{width:22px;height:22px}
   .pilar h3{font-size:1rem;margin:4px 0}
   .pilar p{color:var(--gris);font-size:.86rem;margin:0}
 
   .bloque{display:grid;grid-template-columns:1fr 1.3fr;gap:50px;align-items:start}
   .bloque.inv .txt{order:2}
   .bloque .txt{position:sticky;top:160px}
-  .bloque .ico{font-size:2.4rem}
+  .bloque .ico{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;background:color-mix(in srgb,var(--primario) 10%,#fff);color:var(--primario)}
+  .bloque .ico .i{width:30px;height:30px}
+  section.oscuro .bloque .ico{background:#2f3439;color:#ffd2ad}
   .bloque h2{font-size:clamp(2rem,4vw,2.7rem);margin:6px 0 16px}
   .bloque h2::after{content:"";display:block;width:56px;height:4px;background:var(--naranja);border-radius:3px;margin-top:10px}
   .bloque p{color:var(--gris);margin-bottom:14px}
@@ -83,7 +87,7 @@
   .pasos{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:22px 0 6px}
   .paso{background:#2f3439;border:1px solid #42484d;border-radius:16px;padding:14px 10px;text-align:center;position:relative}
   .paso:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--naranja);font-weight:800;z-index:1}
-  .paso .e{font-size:1.5rem}
+  .paso .e{color:#ffd2ad}.paso .e .i{width:26px;height:26px}
   .paso b{display:block;font-size:.9rem;margin-top:2px}
   .paso small{display:block;color:#aeb5b1;font-size:.74rem;line-height:1.3}
 
@@ -143,7 +147,7 @@
       <li><a href="granja.html" class="act">Cosecha Porcina</a></li>
       <li><a href="index.html#visitanos">Visítanos</a></li>
     </ul>
-    <a class="btn" href="index.html#menu">🛒 Armar pedido</a>
+    <a class="btn" href="index.html#menu">[[ico:shopping-cart]] Armar pedido</a>
     <button class="menu-toggle" aria-label="Abrir menú" onclick="document.getElementById('links').classList.toggle('open')">☰</button>
   </nav>
 </header>
@@ -155,7 +159,7 @@
     <p id="hTexto"></p>
     <div class="btns">
       <a href="#cerdos" class="btn blanco">Conocé la granja ↓</a>
-      <a href="index.html?cat=Cerdo#menu" class="btn nar">🛒 Ver cortes</a>
+      <a href="index.html?cat=Cerdo#menu" class="btn nar">[[ico:shopping-cart]] Ver cortes</a>
     </div>
   </div>
 </section>
@@ -185,11 +189,11 @@
 <section>
   <div class="wrap">
     <div class="cta">
-      <h2>De nuestra granja a su mesa 🥩</h2>
+      <h2>De nuestra granja a su mesa</h2>
       <p>Arme su pedido de cerdo o res y páselo a recoger a la hora que elija.</p>
       <div class="btns">
-        <a class="btn blanco" href="index.html?cat=Cerdo#menu">🐖 Cortes de cerdo</a>
-        <a class="btn nar" href="index.html?cat=Res#menu">🥩 Cortes de res</a>
+        <a class="btn blanco" href="index.html?cat=Cerdo#menu">[[ico:ham]] Cortes de cerdo</a>
+        <a class="btn nar" href="index.html?cat=Res#menu">[[ico:beef]] Cortes de res</a>
       </div>
     </div>
   </div>
@@ -198,6 +202,7 @@
 <footer>
   <div class="wrap">
     <img src="logo.png" alt="{{nombre}}">
+    <p id="contacto" style="margin-bottom:6px;font-weight:600;color:var(--primario)"></p>
     <small>© <span id="year"></span> {{nombre}} · {{lema}}</small>
   </div>
 </footer>
@@ -217,17 +222,18 @@
 <script type="module">
 import * as N from "./negocio.js?v={{version}}";
 const { NEGOCIO, CONFIG, GRANJA: G } = N;
+import { icono } from "./iconos.js?v={{version}}";
 const $ = id => document.getElementById(id);
 const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 document.querySelector(".hero").style.backgroundImage = `url('${G.hero}')`;
-$("hUbic").textContent = "📍 " + G.ubicacion;
+$("hUbic").innerHTML = icono("map-pin") + " " + esc(G.ubicacion);
 $("hScript").textContent = G.script + " a su mesa";
 $("hNombre").textContent = G.nombre;
 $("hTexto").textContent = G.intro[0];
 $("intro").innerHTML = G.intro.slice(1).map(t=>`<p>${esc(t)}</p>`).join("");
 $("lema").textContent = G.lema;
-$("pilares").innerHTML = G.pilares.map(([ic,t,d])=>`<div class="pilar"><div class="ic">${ic}</div><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("");
+$("pilares").innerHTML = G.pilares.map(([ic,t,d])=>`<div class="pilar"><div class="ic">${icono(ic) || ic}</div><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("");
 
 // Galería: todas las fotos de los bloques, para el visor
 const todas = [];
@@ -237,19 +243,20 @@ $("bloques").innerHTML = G.bloques.map((b,i)=>{
   return `<section id="${b.id}" class="${b.oscuro?"oscuro":(i%2?"alt":"")}">
     <div class="wrap bloque ${i%2?"inv":""}">
       <div class="txt">
-        <div class="ico" aria-hidden="true">${b.ico}</div>
+        <div class="ico" aria-hidden="true">${icono(b.ico) || b.ico}</div>
         <h2>${esc(b.titulo)}</h2>
         ${b.texto.map(t=>`<p>${esc(t)}</p>`).join("")}
-        ${b.pasos?`<div class="pasos">${b.pasos.map(([e,t,d])=>`<div class="paso"><div class="e">${e}</div><b>${esc(t)}</b><small>${esc(d)}</small></div>`).join("")}</div>`:""}
+        ${b.pasos?`<div class="pasos">${b.pasos.map(([e,t,d])=>`<div class="paso"><div class="e">${icono(e) || e}</div><b>${esc(t)}</b><small>${esc(d)}</small></div>`).join("")}</div>`:""}
       </div>
       <div class="fotos ${b.fotos.length===1?"una":""}">${fotos}</div>
     </div>
   </section>`;
 }).join("");
-$("subnav").innerHTML = G.bloques.map(b=>`<a href="#${b.id}">${b.ico} ${esc(b.titulo)}</a>`).join("") + `<a href="#ambiente">🌱 Ambiente</a>`;
+$("subnav").innerHTML = G.bloques.map(b=>`<a href="#${b.id}">${icono(b.ico)} ${esc(b.titulo)}</a>`).join("") + `<a href="#ambiente">${icono("leaf")} Ambiente</a>`;
 $("linea").innerHTML = G.linea.map(([a,t])=>`<li><b>${esc(a)}</b>${esc(t)}</li>`).join("");
 $("cumple").textContent = G.cumplimiento || "";
 $("year").textContent = new Date().getFullYear();
+$("contacto").innerHTML = [...CONFIG.telefonos.map(t=>`<a href="tel:+506${t.replace(/\D/g,"")}">${icono("phone")} ${esc(t)}</a>`), CONFIG.correo ? `<a href="mailto:${esc(CONFIG.correo)}">${icono("mail")} ${esc(CONFIG.correo)}</a>` : ""].filter(Boolean).join(" &nbsp;·&nbsp; ");
 $("wa").href = CONFIG.whatsapp ? `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(`Hola ${NEGOCIO.nombreCorto}, vi la página de la granja y quiero hacer una consulta.`)}` : `tel:+506${CONFIG.telefonos[0].replace(/\D/g,"")}`;
 
 // Visor de fotos

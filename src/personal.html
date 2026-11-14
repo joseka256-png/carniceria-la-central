@@ -103,7 +103,7 @@
   <section id="vLogin" class="card" style="max-width:420px;margin:30px auto">
     <h1 style="margin-bottom:4px">Panel del personal</h1>
     <p style="color:var(--gris);font-size:.9rem;margin-bottom:18px">Tarjeta {{nombreCorto}} · sellos y premios</p>
-    <div style="margin-bottom:12px"><label for="lEmail">Correo</label><input id="lEmail" type="email" autocomplete="username"></div>
+    <div style="margin-bottom:12px"><label for="lEmail">Correo</label><input id="lEmail" type="email" autocomplete="username" value="{{config.correo}}"></div>
     <div style="margin-bottom:16px"><label for="lPass">Contraseña</label>
       <div class="pass-wrap">
         <input id="lPass" type="password" autocomplete="current-password">
@@ -128,7 +128,7 @@
     <!-- CAJA -->
     <div id="pCaja">
       <div class="card" id="qrCard">
-        <h2 style="margin-bottom:4px">📱 Sello por QR</h2>
+        <h2 style="margin-bottom:4px">Sello por QR</h2>
         <p style="color:var(--gris);font-size:.88rem;margin-bottom:12px">Escribí el monto de la compra y mostrale el QR al cliente para que lo escanee con su celular. Sirve <b>una sola vez</b> y vence en <span class="qrMin"></span> min.</p>
         <div class="row">
           <div><label for="qMonto">Monto de la compra (₡)</label><input id="qMonto" type="number" inputmode="numeric" placeholder="Ej: 12500" min="0"></div>
@@ -362,7 +362,7 @@ function abrirCliente(tel) {
     $("cliHist").innerHTML = qs.empty ? '<small style="color:var(--gris)">Sin movimientos.</small>' :
       qs.docs.map(d => { const m = d.data();
         const txt = m.tipo === "sello" ? `+${m.sellosAgregados} sello${m.sellosAgregados > 1 ? "s" : ""} · ${fmt(m.monto)}`
-                  : m.tipo === "qr" ? `+${m.sellosAgregados} por QR 📱 · ${fmt(m.monto)}`
+                  : m.tipo === "qr" ? `+${m.sellosAgregados} por QR · ${fmt(m.monto)}`
                   : m.tipo === "canje" ? "Premio canjeado" : `Sin sello · ${fmt(m.monto)}`;
         return `<div><span class="t-${m.tipo}">${txt}</span><span style="color:var(--gris)">${fFecha(m.fecha)} · ${esc((m.staffNombre || "").split(" ")[0])}</span></div>`;
       }).join("");

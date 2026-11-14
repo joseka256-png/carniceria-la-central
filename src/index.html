@@ -63,7 +63,11 @@
   .hero-img .foto{width:100%;border-radius:32px;aspect-ratio:1;object-fit:cover;box-shadow:0 30px 60px rgba(0,0,0,.18);border:10px solid #fff}
   .badge{position:absolute;white-space:nowrap;background:#fff;border-radius:18px;padding:12px 18px;box-shadow:0 12px 30px rgba(0,0,0,.12);font-weight:600;display:flex;align-items:center;gap:10px;font-size:.92rem}
   .badge.b1{left:-24px;bottom:40px}.badge.b2{right:-14px;top:30px}
-  .badge span{font-size:1.6rem}
+  .badge span{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--primario) 10%,#fff);color:var(--primario)}
+  .badge span .i{width:22px;height:22px}
+  /* ÍCONOS (svg de línea, src/iconos.js) */
+  .i{width:1.15em;height:1.15em;vertical-align:-.22em;flex-shrink:0}
+  .btn .i{width:1.1em;height:1.1em}
 
   /* SECCIONES */
   section{padding:90px 0}
@@ -81,7 +85,8 @@
   .seccion{background:#2c3135;border:1px solid #394045;border-radius:22px;padding:24px;animation:fade .4s ease;position:relative;overflow:hidden}
   .seccion::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--primario),var(--naranja))}
   .seccion-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-  .seccion-head .ico{width:52px;height:52px;border-radius:14px;background:#363c41;display:grid;place-items:center;font-size:1.7rem;flex-shrink:0}
+  .seccion-head .ico{width:52px;height:52px;border-radius:14px;background:#363c41;display:grid;place-items:center;flex-shrink:0;color:#ffd2ad}
+  .seccion-head .ico .i{width:26px;height:26px}
   .seccion h3{font-weight:800;font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase;color:#fff}
   .seccion h3::after{content:"";display:block;width:46px;height:3px;background:var(--naranja);border-radius:3px;margin-top:4px}
   .seccion .sub{color:#b9c0bc;font-size:.85rem;margin:6px 0 4px}
@@ -99,7 +104,9 @@
   .nota{text-align:center;color:#b9c0bc;font-size:.85rem;margin-top:30px}
   .precio small{font-weight:500;opacity:.85;font-size:.78rem}
   .buscar{max-width:520px;margin:0 auto 18px}
-  .buscar input{width:100%;padding:12px 18px;border-radius:50px;border:2px solid #3b4146;background:#2c3135;color:#fff;font-family:inherit;font-size:.95rem}
+  .buscar{position:relative}
+  .buscar .i{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#9aa29e;pointer-events:none}
+  .buscar input{width:100%;padding:12px 18px 12px 46px;border-radius:50px;border:2px solid #3b4146;background:#2c3135;color:#fff;font-family:inherit;font-size:.95rem}
   .buscar input:focus{outline:none;border-color:var(--primario)}
   .buscar input::placeholder{color:#9aa29e}
   .sin-res{grid-column:1/-1;text-align:center;color:#b9c0bc;padding:30px 0}
@@ -140,7 +147,8 @@
   .granja-fotos img:nth-child(2){margin-top:34px}.granja-fotos img:nth-child(3){margin-top:-34px}
   .pilares{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:56px 0 0}
   .pilar{background:var(--crema);border:1px solid var(--borde);border-radius:20px;padding:24px}
-  .pilar .ic{font-size:1.9rem;margin-bottom:8px}
+  .pilar .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--primario) 10%,#fff);color:var(--primario);margin-bottom:12px}
+  .pilar .ic .i{width:24px;height:24px}
   .pilar h3{font-size:1.05rem;margin-bottom:6px}
   .pilar p{color:var(--gris);font-size:.9rem}
   .granja-amb{background:var(--pizarra);color:#fff;border-radius:26px;padding:36px}
@@ -174,13 +182,15 @@
   #visitanos .titulo h2{color:#fff}
   .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
   .card{background:#353a3f;border-radius:22px;padding:32px;border:1px solid #42484d}
-  .card .ic{font-size:2rem;margin-bottom:12px}
+  .card .ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:#2c3135;color:#ffd2ad;margin-bottom:14px}
+  .card .ic .i{width:26px;height:26px}
   .card h3{margin-bottom:8px;font-size:1.2rem}
   .card p,.card li{color:#d0d5d2;font-size:.95rem}
   .card ul{list-style:none}
   .card li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed #4a5056;padding:5px 0}
   .card a.btn{margin-top:16px}
   .tel-link{display:block;font-weight:700;color:#fff;font-size:1.1rem;margin-top:6px}
+  .tel-link[href^="mailto"]{font-size:.92rem;overflow-wrap:anywhere}
   .tel-link:hover{color:#ffd2ad}
   .mapa{margin-top:28px;border-radius:22px;overflow:hidden;border:1px solid #42484d;height:320px;background:#353a3f}
   .mapa iframe{width:100%;height:100%;border:0;filter:grayscale(.15)}
@@ -283,7 +293,7 @@
   .qty span{min-width:20px;text-align:center;font-weight:700;white-space:nowrap}
   .car-item .sub{font-weight:700;color:var(--primario);min-width:70px;text-align:right}
   .car-vacio{text-align:center;color:var(--gris);padding:50px 10px}
-  .car-vacio div{font-size:3rem;margin-bottom:8px}
+  .car-vacio div{margin-bottom:8px;color:var(--borde)}.car-vacio .i{width:56px;height:56px}
   .car-foot{border-top:1px solid var(--borde);padding:18px 22px 22px;background:var(--crema)}
   .car-total{display:flex;justify-content:space-between;font-size:1.15rem;font-weight:800;margin-bottom:14px}
   .car-total span:last-child{color:var(--primario)}
@@ -308,7 +318,7 @@
     .hero-logo{height:96px}
     .hero-img{max-width:340px;width:85%;margin:30px auto 0}
     .badge{font-size:.8rem;padding:8px 12px;border-radius:14px}
-    .badge span{font-size:1.2rem}
+    .badge span{width:32px;height:32px}
     .badge.b1{left:-14px;bottom:18px}
     .badge.b2{right:-14px;top:14px}
     .hero-btns .btn{flex:1;justify-content:center;min-width:220px}
@@ -335,7 +345,7 @@
 <!--/@granja-->      <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#visitanos">Visítanos</a></li>
     </ul>
-    <a class="btn" href="#menu" data-armar>🛒 Armar pedido</a>
+    <a class="btn" href="#menu" data-armar>[[ico:shopping-cart]] Armar pedido</a>
     <button class="menu-toggle" aria-label="Abrir menú" onclick="document.getElementById('links').classList.toggle('open')">☰</button>
   </nav>
 </header>
@@ -358,7 +368,7 @@
       <p>{{hero.texto}}</p>
       <div class="hero-btns">
         <a href="#menu" class="btn">Ver menú →</a>
-        <a href="#menu" class="btn outline" data-armar>🛒 Armar mi pedido</a>
+        <a href="#menu" class="btn outline" data-armar>[[ico:shopping-cart]] Armar mi pedido</a>
       </div>
     </div>
     <div class="hero-img">
@@ -375,11 +385,11 @@
       <span class="script" id="menuScript">Nuestro</span>
       <h2 id="menuTitulo">Menú</h2>
     </div>
-    <div style="text-align:center"><span class="nota-prep"><span id="menuPrep">⏱️ Todo se prepara al momento · tiempo aprox.</span> <span class="tPrep"></span></span></div>
-    <div class="buscar"><input type="search" id="buscar" placeholder="🔍 Buscar producto (ej. lomo, chuleta, queso)…" aria-label="Buscar producto"></div>
+    <div style="text-align:center"><span class="nota-prep">[[ico:clock]] <span id="menuPrep">Todo se prepara al momento · tiempo aprox.</span> <span class="tPrep"></span></span></div>
+    <div class="buscar">[[ico:search]]<input type="search" id="buscar" placeholder="Buscar producto (ej. lomo, chuleta, queso)…" aria-label="Buscar producto"></div>
     <div class="tabs" id="tabs"></div>
     <div class="grid-menu" id="grid"></div>
-    <p class="nota" id="menuNota">🛒 Agregá productos, tocá <b>Ver pedido</b> y elegí a qué hora pasás a retirarlo · Precios en colones, sujetos a cambio.</p>
+    <p class="nota" id="menuNota">Agregá productos, tocá <b>Ver pedido</b> y elegí a qué hora pasás a retirarlo · Precios en colones, sujetos a cambio.</p>
   </div>
 </section>
 
@@ -398,7 +408,7 @@
         <p class="granja-lema" id="gLema"></p>
         <div class="hero-btns">
           <a href="granja.html" class="btn" id="gConocer">Conocé la granja →</a>
-          <a href="#menu" class="btn outline" id="gVerCerdo">🐖 Ver cortes de cerdo</a>
+          <a href="#menu" class="btn outline" id="gVerCerdo">[[ico:ham]] Ver cortes de cerdo</a>
         </div>
       </div>
       <div class="granja-fotos" id="gFotos"></div>
@@ -499,22 +509,22 @@
     </div>
     <div class="cards">
       <div class="card">
-        <div class="ic">📍</div>
+        <div class="ic">[[ico:map-pin]]</div>
         <h3>Ubicación</h3>
         <p id="direccion"></p>
         <a class="btn nar" id="maps" href="#" target="_blank" rel="noopener">Cómo llegar</a>
       </div>
       <div class="card">
-        <div class="ic">🕒</div>
+        <div class="ic">[[ico:clock]]</div>
         <h3>Horario</h3>
         <ul id="horario"></ul>
       </div>
       <div class="card">
-        <div class="ic">📞</div>
+        <div class="ic">[[ico:phone]]</div>
         <h3>Pedidos</h3>
         <p>Armá tu pedido en el menú, elegí a qué hora pasás y envialo por WhatsApp. O llamanos. Lo tenemos listo a la hora que indiqués.</p>
         <div id="telefonos"></div>
-        <a class="btn nar" href="#menu" data-armar>🛒 Armar mi pedido</a>
+        <a class="btn nar" href="#menu" data-armar>[[ico:shopping-cart]] Armar mi pedido</a>
       </div>
     </div>
     <div class="mapa"><iframe id="mapaFrame" title="Mapa de {{nombre}}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
@@ -532,7 +542,7 @@
   <div class="cta">
     <h2>{{cta.titulo}}</h2>
     <p>{{cta.texto}}</p>
-    <a class="btn" href="#menu" data-armar>🛒 Armar mi pedido</a>
+    <a class="btn" href="#menu" data-armar>[[ico:shopping-cart]] Armar mi pedido</a>
   </div>
 </div>
 
@@ -544,14 +554,14 @@
   </div>
 </footer>
 
-<button class="car-fab" id="carFab" aria-label="Ver carrito">🛒 Ver pedido <span class="cnt" id="carCnt">0</span> <span id="carFabTotal"></span></button>
+<button class="car-fab" id="carFab" aria-label="Ver carrito">[[ico:shopping-cart]] Ver pedido <span class="cnt" id="carCnt">0</span> <span id="carFabTotal"></span></button>
 <div class="car-overlay" id="carOverlay"></div>
 <aside class="carrito" id="carrito" aria-label="Tu pedido">
-  <div class="car-head"><h3>🛒 Tu pedido</h3><button class="car-x" id="carCerrar" aria-label="Cerrar">×</button></div>
+  <div class="car-head"><h3>Tu pedido</h3><button class="car-x" id="carCerrar" aria-label="Cerrar">×</button></div>
   <div class="car-body" id="carLista"></div>
   <div class="car-foot" id="carFoot">
     <div id="paso1">
-      <div class="prep">⏱️ Todo se prepara al momento. Tiempo aprox.: <span class="tPrep"></span></div>
+      <div class="prep">[[ico:clock]] Todo se prepara al momento. Tiempo aprox.: <span class="tPrep"></span></div>
       <div class="car-total"><span>Total</span><span id="carTotal">₡0</span></div>
       <button class="btn" id="btnOrdenar">Ordenar →</button>
       <div class="car-links"><button class="link-sm" id="btnSeguir">← Seguir agregando</button><button class="link-sm" id="btnVaciar">Vaciar pedido</button></div>
@@ -562,7 +572,7 @@
       <div class="campo"><label>¿A qué hora pasás a retirarlo?</label><div class="retiro" id="retiroOps"></div><input type="time" id="pHora" style="display:none;margin-top:8px"></div>
       <div class="campo"><label for="pNota">Nota para la cocina <span style="font-weight:400;color:var(--gris)">(opcional)</span></label><textarea id="pNota" placeholder="Ej: sin cebolla, salsa aparte…" maxlength="300"></textarea></div>
       <div class="msg" id="pMsg"></div>
-      <a class="btn" id="btnEnviar" href="#" target="_blank" rel="noopener" style="background:#25D366">💬 Enviar pedido por WhatsApp</a>
+      <a class="btn" id="btnEnviar" href="#" target="_blank" rel="noopener" style="background:#25D366">[[ico:message-circle]] Enviar pedido por WhatsApp</a>
       <div class="car-links"><button class="link-sm" id="btnVolver">← Volver al pedido</button></div>
       <p class="car-nota">Se abre WhatsApp con tu pedido y la hora de retiro; solo tocá enviar. Lo tenemos listo a esa hora, no hace falta que preguntés.</p>
     </div>
@@ -572,6 +582,7 @@
 
 <script type="module">
 import * as N from "./negocio.js?v={{version}}";
+import { icono } from "./iconos.js?v={{version}}";
 const { NEGOCIO, CONFIG, MENU } = N;
 
 /* ====================== lógica ====================== */
@@ -621,7 +632,7 @@ function pintarCategoria(cat, q = ""){
     : secciones.map(sec=>`
     <div class="seccion">
       <div class="seccion-head">
-        ${sec.ico?`<div class="ico" aria-hidden="true">${sec.ico}</div>`:''}
+        ${sec.ico?`<div class="ico" aria-hidden="true">${icono(sec.ico) || sec.ico}</div>`:''}
         <h3>${sec.titulo}</h3>
       </div>
       ${sec.sub?`<p class="sub">${sec.sub}</p>`:''}
@@ -664,10 +675,16 @@ document.querySelectorAll(".tPrep").forEach(el=>el.textContent = CONFIG.tiempoPr
 document.getElementById("direccion").textContent = CONFIG.direccion;
 document.getElementById("maps").href = CONFIG.mapsUrl;
 document.getElementById("mapaFrame").src = CONFIG.mapaEmbed;
-document.getElementById("telefonos").innerHTML = CONFIG.telefonos.map(t=>`<a class="tel-link" href="tel:+506${telDigitos(t)}">📞 ${t}</a>`).join("");
+document.getElementById("telefonos").innerHTML = CONFIG.telefonos.map(t=>`<a class="tel-link" href="tel:+506${telDigitos(t)}">${icono("phone")} ${t}</a>`).join("");
 document.getElementById("telsFooter").innerHTML = CONFIG.telefonos.map(t=>`<a href="tel:+506${telDigitos(t)}">${t}</a>`).join(" · ");
 document.getElementById("horario").innerHTML = CONFIG.horario.map(([d,h])=>`<li><span>${d}</span><span>${h}</span></li>`).join("");
-document.getElementById("pagos").innerHTML = CONFIG.pagos.map((p,i)=>`<span class="chip ${p.includes("SINPE")?"sinpe":""}">${p}</span>`).join("");
+const icoPago = p => /sinpe/i.test(p) ? "smartphone" : /tarjeta/i.test(p) ? "credit-card" : /efectivo/i.test(p) ? "banknote" : "wallet";
+document.getElementById("pagos").innerHTML = CONFIG.pagos.map((p,i)=>`<span class="chip ${p.includes("SINPE")?"sinpe":""}">${icono(icoPago(p))} ${esc(p)}</span>`).join("");
+if (CONFIG.correo) {
+  const mail = `<a class="tel-link" href="mailto:${esc(CONFIG.correo)}">${icono("mail")} ${esc(CONFIG.correo)}</a>`;
+  document.getElementById("telefonos").insertAdjacentHTML("beforeend", mail);
+  document.getElementById("telsFooter").insertAdjacentHTML("beforeend", ` · <a href="mailto:${esc(CONFIG.correo)}">${esc(CONFIG.correo)}</a>`);
+}
 document.getElementById("year").textContent = new Date().getFullYear();
 document.querySelectorAll(".anios").forEach(el => el.textContent = (new Date().getFullYear() - NEGOCIO.fundado) + "");
 
@@ -712,7 +729,7 @@ function pintarCarrito(){
       <div class="info"><b>${esc(i.nombre)}</b><small>${colones(i.precio)} ${i.unidad==="kg" ? "el kilo" : i.unidad==="paquete" ? "c/paquete" : "c/u"}</small></div>
       <div class="qty"><button data-k="${k}" data-d="-1" aria-label="Quitar">−</button><span>${fmtCant(i.cant,i.unidad)}</span><button data-k="${k}" data-d="1" aria-label="Agregar">+</button></div>
       <div class="sub">${i.unidad==="kg"?"≈ ":""}${colones(i.precio*i.cant)}</div>
-    </div>`).join("") : `<div class="car-vacio"><div>🛒</div>Tu pedido está vacío.<br>Agregá productos desde el menú.</div>`;
+    </div>`).join("") : `<div class="car-vacio"><div>${icono("shopping-cart")}</div>Tu pedido está vacío.<br>Agregá productos desde el menú.</div>`;
   $c("carLista").querySelectorAll(".qty button").forEach(b=>b.onclick=()=>cambiar(+b.dataset.k, +b.dataset.d));
   if (!n) paso(1);
   armarMensaje();
@@ -752,7 +769,7 @@ function armarMensaje(){
     ? `• ${fmtCant(i.cant,"kg")} de ${i.nombre} — ${colones(i.precio*i.cant)} aprox.`
     : `• ${i.cant} x ${i.nombre}${i.unidad==="paquete" ? (i.cant>1?" (paquetes)":" (paquete)") : ""} — ${colones(i.precio*i.cant)}`);
   const r = horaRetiro();
-  const msg = `Hola ${NEGOCIO.nombreCorto}, quiero hacer un pedido para retirar 🛒\n\n*A nombre de:* ${nombre}\n*Paso a retirarlo:* ${r.texto || "-"}\n\n${lineas.join("\n")}\n\n*Total${hayKg()?" aprox.":""}: ${colones(totalCar())}*` + (hayKg() ? `\n_(lo que va por kilo se cobra según el peso exacto)_` : "") + (nota ? `\n\n*Nota:* ${nota}` : "") + `\n\nNo hace falta confirmar, paso a la hora indicada. ¡Gracias!`;
+  const msg = `Hola ${NEGOCIO.nombreCorto}, quiero hacer un pedido para retirar:\n\n*A nombre de:* ${nombre}\n*Paso a retirarlo:* ${r.texto || "-"}\n\n${lineas.join("\n")}\n\n*Total${hayKg()?" aprox.":""}: ${colones(totalCar())}*` + (hayKg() ? `\n_(lo que va por kilo se cobra según el peso exacto)_` : "") + (nota ? `\n\n*Nota:* ${nota}` : "") + `\n\nNo hace falta confirmar, paso a la hora indicada. ¡Gracias!`;
   $c("btnEnviar").href = waLink(msg);
 }
 
@@ -834,11 +851,11 @@ pintarCarrito();
 /* ====================== GRANJA ====================== */
 const G = N.GRANJA, $g = id => document.getElementById(id);
 if (G && $g("granja")) {
-  $g("gScript").textContent = G.script; $g("gTitulo").textContent = G.titulo; $g("gNombre").textContent = "🐖 " + G.nombre + " · " + (G.ubicacion||"");
+  $g("gScript").textContent = G.script; $g("gTitulo").textContent = G.titulo; $g("gNombre").textContent = G.nombre + " · " + (G.ubicacion||"");
   $g("gIntro").innerHTML = G.intro.map(t=>`<p>${esc(t)}</p>`).join("");
   $g("gLema").textContent = G.lema || "";
   $g("gFotos").innerHTML = (G.fotosResumen || G.fotos || []).map(([src,alt])=>`<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy">`).join("");
-  $g("gPilares").innerHTML = G.pilares.map(([ic,t,d])=>`<div class="pilar"><div class="ic">${ic}</div><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("");
+  $g("gPilares").innerHTML = G.pilares.map(([ic,t,d])=>`<div class="pilar"><div class="ic">${icono(ic) || ic}</div><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("");
   $g("gVerCerdo").onclick = e => { e.preventDefault(); if (MENU["Cerdo"]) { catActual = "Cerdo"; $b.value = ""; pintarCategoria("Cerdo"); } document.getElementById("menu").scrollIntoView({behavior:"smooth"}); };
 }
 
